@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 
 $label  = lsm_field( 'error_label', 'option', '404' );
 $title  = lsm_field( 'error_title', 'option', 'Page Not' );
-$accent = lsm_field( 'error_title_accent', 'option', 'Found.' );
+$accent = lsm_field( 'error_title_accent', 'option', 'Found' );
 $lede   = lsm_field( 'error_lede', 'option', 'The page you were after has moved or never existed. Everything else is still where you left it.' );
 $button = lsm_field( 'error_button', 'option' );
 
