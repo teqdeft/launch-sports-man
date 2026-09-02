@@ -1,0 +1,2309 @@
+/* ===========================================================================
+   LAUNCH SPORTS MANAGEMENT — DESKTOP STYLESHEET
+   Every non-media rule for all four pages, in original cascade order.
+
+   Each page loads exactly two sheets, in this order:
+     1. assets/css/desktop.css     this file
+     2. assets/css/responsive.css every viewport media query
+
+   PAGE SCOPING
+   Rules shared by all four pages are unprefixed. Rules that belong to only
+   some pages carry that page's <body> class, wrapped in :where() —
+     :where(.page-home)  :where(.page-what-we-do)
+     :where(.page-about) :where(.page-lets-talk)
+   :where() matches but adds ZERO specificity, so a scoped rule weighs exactly
+   what it weighed when it lived in its own file. That matters: scoping with a
+   bare class would lift `p` from (0,0,1) to (0,1,1) and the element resets
+   would start beating [data-credit] and [data-motion-toggle].
+
+   Scoping is what lets one shared pair of files serve four pages whose
+   layouts genuinely differ — the closing headline, for one, is sized
+   differently on every page, so those rules cannot simply be merged.
+
+   NOTE: this build was designed at 1440px and up, and most element sizing
+   still sits in inline style attributes in the markup. That is why the
+   responsive sheet leans on !important. Moving those inline values onto
+   classes is the next cleanup step.
+   =========================================================================== */
+
+/* ---- WordPress admin bar ------------------------------------------------
+   For a logged-in user WordPress offsets <html> by 32px (46px under 783px),
+   but 100vh does not shrink to match. Every full-height section then hangs
+   32px below the fold - on the home hero that pushes the gold running band
+   clean off screen. This custom property is 0 for visitors, so nothing about
+   the public rendering changes; the three viewport-height rules subtract it.
+   ------------------------------------------------------------------------ */
+:root { --wp-bar: 0px; }
+body.admin-bar { --wp-bar: 32px; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: #000; }
+body { margin: 0; background: #000; -webkit-font-smoothing: antialiased; }
+:where(.page-home) h1,
+:where(.page-home) h2,
+:where(.page-home) h3,
+:where(.page-home) h4,
+:where(.page-home) p,
+:where(.page-home) ul,
+:where(.page-home) li,
+:where(.page-home) figure,
+:where(.page-what-we-do) h1,
+:where(.page-what-we-do) h2,
+:where(.page-what-we-do) h3,
+:where(.page-what-we-do) h4,
+:where(.page-what-we-do) p,
+:where(.page-what-we-do) ul,
+:where(.page-what-we-do) li,
+:where(.page-what-we-do) figure,
+:where(.page-about) h1,
+:where(.page-about) h2,
+:where(.page-about) h3,
+:where(.page-about) h4,
+:where(.page-about) p,
+:where(.page-about) ul,
+:where(.page-about) li,
+:where(.page-about) figure { margin: 0; padding: 0; }
+:where(.page-lets-talk) h1,
+:where(.page-lets-talk) h2,
+:where(.page-lets-talk) h3,
+:where(.page-lets-talk) h4,
+:where(.page-lets-talk) p,
+:where(.page-lets-talk) ul,
+:where(.page-lets-talk) li,
+:where(.page-lets-talk) figure,
+:where(.page-lets-talk) fieldset { margin: 0; padding: 0; border: none; }
+ul { list-style: none; }
+a { color: inherit; text-decoration: none; transition: color .25s ease, opacity .25s ease; }
+a:hover { color: #CC9D39; }
+:where(.page-home) button,
+:where(.page-home) input,
+:where(.page-home) textarea { font: inherit; }
+:where(.page-lets-talk) input,
+:where(.page-lets-talk) textarea,
+:where(.page-lets-talk) button { font: inherit; color: inherit; }
+/* Focusring in de sitekleuren. Goud haalt op papier maar 2,18:1 en dus niet
+   de 3:1 van SC 1.4.11; de donkere halo eromheen levert dat contrast op de
+   lichte secties, op zwart draagt het goud het zelf. */
+:focus-visible { outline: 2px solid #CC9D39; outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgba(11,11,11,.7); }
+::selection { background: #CC9D39; color: #0B0B0B; }
+/* ---- aurora achter de hero -------------------------------------------
+   Twee schuine gouden banden die traag langs elkaar schuiven, zwaar
+   vervaagd en met een masker naar de randen uit. Bewust CSS en geen WebGL:
+   de regel bovenaan (@media prefers-reduced-motion) zet 'animation' dan
+   vanzelf stil, en er komt geen tweede GL-context bij naast de rook in
+   de footer. 'alternate' i.p.v. een lus, zodat hij nooit terugspringt. */
+:where(.page-home) [data-aurora] { position: absolute; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;
+  -webkit-mask-image: radial-gradient(128% 96% at 50% 26%, #000 38%, transparent 100%);
+  mask-image: radial-gradient(128% 96% at 50% 26%, #000 38%, transparent 100%); }
+:where(.page-home) [data-aurora] i { position: absolute; inset: -45%; display: block; filter: blur(80px); will-change: transform; }
+:where(.page-home) [data-aurora] i:nth-child(1) {
+  opacity: .58;
+  background-image: repeating-linear-gradient(104deg,
+    transparent 0 7%, rgba(204,157,57,.34) 13%, rgba(138,106,38,.26) 21%, transparent 28% 38%);
+  animation: aurora-a 17s ease-in-out infinite alternate; }
+:where(.page-home) [data-aurora] i:nth-child(2) {
+  opacity: .40;
+  background-image: repeating-linear-gradient(68deg,
+    transparent 0 9%, rgba(204,157,57,.22) 17%, transparent 25% 44%);
+  animation: aurora-b 26s ease-in-out infinite alternate; }
+@keyframes aurora-a { from { transform: translate3d(-16%,-8%,0) rotate(-7deg) scale(1.06); }
+                      to   { transform: translate3d(16%,9%,0)  rotate(9deg)  scale(1.20); } }
+@keyframes aurora-b { from { transform: translate3d(14%,7%,0)  rotate(8deg)  scale(1.16); }
+                      to   { transform: translate3d(-14%,-9%,0) rotate(-8deg) scale(1.02); } }
+:where(.page-lets-talk) .field { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(11,11,11,.28); padding: 10px 2px; font-size: 15px; color: #0B0B0B; }
+:where(.page-lets-talk) .field::placeholder { color: rgba(11,11,11,.34); }
+/* Geen blauw systeemkader op de velden, maar wél een zichtbare focus:
+   de onderlijn wordt goud en 2px. Focus zomaar weghalen is een fout
+   tegen WCAG 2.4.7 (Level AA), dus het wordt vervangen, niet geschrapt. */
+:where(.page-lets-talk) .field:focus,
+:where(.page-lets-talk) .field:focus-visible { outline: none; border-bottom-color: #CC9D39; border-bottom-width: 2px; padding-bottom: 9px; }
+:where(.page-lets-talk) .field::placeholder { color: rgba(11,11,11,.35); }
+
+/* Hamburger en mobiel menu bestaan alleen onder 1024px. Zonder deze
+   basisregel zijn het op desktop gewone zichtbare elementen — dat duwde
+   de hero 21px omlaag en zette een losse regel links onder de header. */
+.burger, #menu { display: none; }
+/* ---- reuzenwoordmerk in de footer -------------------------------
+   Staat boven het rookcanvas maar onder de inhoud, met lage dekking,
+   zodat de rook er doorheen en overheen trekt in plaats van eromheen. */
+/* De arm staat in deze sectie achter de tekst en de teller; anders dekt
+   hij '00 / 12' rechts af. */
+:where(.page-home) section:has(> div > [data-basketball]) canvas,
+:where(.page-home) section:has(> div > [data-basketball]) [data-opp-row] { position: relative; z-index: 2; }
+footer { position: relative; overflow: hidden; }
+[data-footmark] { position: absolute; left: 24px; right: 24px; bottom: 4px; z-index: 1;
+  font-family: 'Big Shoulders Display', sans-serif; font-weight: 800;
+  font-size: clamp(96px, 38.5vw, 1060px); line-height: .74; letter-spacing: -.022em;
+  text-align: center; text-transform: uppercase; pointer-events: none;
+  user-select: none;
+  /* Referentie TRIONN: de letters zijn geen vlak maar een streepraster,
+     zodat de rook er doorheen leest in plaats van erachter te blijven. */
+  color: transparent;
+  background-image: repeating-linear-gradient(to bottom,
+    rgba(242,240,234,.17) 0 2px, rgba(242,240,234,0) 2px 11px);
+  -webkit-background-clip: text; background-clip: text; }
+footer > div { position: relative; z-index: 3; }
+/* Het woordmerk vult de onderste band; de rij met logo, copyright en menu
+   schuift daar bovenuit. */
+/* Het woordmerk mag met zijn bovenkant achter de rij door lopen (de rij
+   staat op z-index 3), zodat de footer niet 860px hoog hoeft te zijn. */
+footer { padding-top: calc(clamp(96px, 38.5vw, 1060px) * .15 + 16px) !important;
+  padding-bottom: calc(clamp(96px, 38.5vw, 1060px) * .74 + 104px) !important; }
+[data-footmark] { bottom: 104px !important; }
+footer > div:not([data-footmark]) { position: absolute !important;
+  left: 40px !important; right: 40px !important; bottom: 60px !important;
+  width: auto !important; max-width: none !important; z-index: 3; }
+/* Afgeronde hoeken: beeld 15px, knoppen 5px. */
+figure, .slot { border-radius: 15px; overflow: hidden; }
+figure img, .slot img { border-radius: 15px; }
+.btn { border-radius: 5px; font-weight: 600; }
+/* Roster: drie op een rij, vanaf 1680px vier. */
+:where(.page-home) .roster li { width: calc((100% - 60px) / 3); }
+/* ---- bal en arm in de 'Opportunity'-sectie ---------------------------
+   De gedraaide foto is 2300x775: de bal is precies zo hoog als de foto,
+   dus --bal is tegelijk zijn middellijn. Het slot is smaller dan de foto
+   en snijdt de arm rechts af; het loopt 60px buiten beeld zodat de arm op
+   elke breedte de schermrand haalt.
+   De 22px speling boven en onder houdt de entree, de ademhaling en de
+   parallax binnen het slot — zonder die marge snijdt overflow:hidden de
+   bovenkant van de bal af.
+   De middellijn is gemaximeerd: de ruimte naast de tekst is vast en
+   schaalt niet mee met de vensterbreedte. */
+:where(.page-home) [data-basketball] {
+  --bal: clamp(200px, 22vw, 380px);
+  position: absolute; right: -60px; top: 50px; z-index: 3;
+  width: calc(var(--bal) * 1.5 + 60px);
+  height: calc(var(--bal) + 44px);
+  padding-top: 22px;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* .lsm-shell :not([data-mq-track]):not([data-mq-set]) zet max-width:100% en weegt
+   (0,3,0); zonder gelijke specificiteit knijpt dat de breedte af terwijl de
+   hoogte vastligt — de bal werd dan platgedrukt. */
+/* Drie keer het attribuut (0,4,0). De algemene max-width:100% uit het
+   mobiele blok weegt (0,3,0) en stond in de oude bundel vóór deze regel;
+   responsive.css laadt nu later, dus alleen meer gewicht houdt de bal heel. */
+:where(.page-home) .lsm-shell [data-ball-photo][data-ball-photo][data-ball-photo] { display: block; height: var(--bal);
+  width: auto; max-width: none !important; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ---- micro-labels in IBM Plex Mono ------------------------------------
+   Eyebrows, tellers, bijschriften en sectiemarkeringen stonden op 9,5 tot
+   13px en waren te licht. Eén maat en één gewicht voor de hele site; onder
+   768px een maat terug omdat de letterspatiëring daar anders te breed
+   uitpakt. Knoppen vallen hier bewust buiten. */
+[data-label] { font-size: 14px !important; font-weight: 600 !important; }
+  
+/* alleen voor schermlezers: het hartje is een beeldteken */
+.visueel-verborgen { position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---- ondertekening -------------------------------------------------- */
+[data-credit] { margin-top: 9px; color: rgba(242,240,234,.5); }
+[data-credit] a { color: rgba(242,240,234,.78); text-decoration: none;
+  border-bottom: 1px solid rgba(242,240,234,.28); padding-bottom: 1px;
+  transition: color .25s ease, border-color .25s ease; }
+[data-credit] a:hover, [data-credit] a:focus-visible { color: #CC9D39; border-color: #CC9D39; }
+[data-credit] i { font-style: normal; color: #CC9D39; }
+  
+/* ---- pauzeknop voor bewegende onderdelen ----------------------------
+   WCAG 2.1 SC 2.2.2 (Level A): alles wat langer dan vijf seconden
+   automatisch beweegt moet te pauzeren zijn. Dat zijn hier de gouden
+   band, de brede tekstband en de rook in de footer. Eén knop zet ze
+   alle drie stil. */
+/* De knop staat niet in het ontwerp maar moet voor SC 2.2.2 wel bereikbaar
+   blijven: hij is onzichtbaar tot iemand er met het toetsenbord op landt,
+   net als een skip-link. */
+[data-motion-toggle] { position: absolute !important; width: 1px !important;
+  height: 1px !important; margin: -1px !important; padding: 0 !important;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+[data-motion-toggle]:focus-visible { position: static !important; width: auto !important;
+  height: auto !important; margin: 0 !important; padding: 4px 2px !important;
+  overflow: visible; clip-path: none; }
+[data-motion-toggle] { font-family: 'IBM Plex Mono', monospace; font-size: 14px;
+  font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(242,240,234,.5); background: none; border: 0; padding: 0;
+  cursor: pointer; border-bottom: 1px solid rgba(242,240,234,.28);
+  transition: color .25s ease, border-color .25s ease; }
+[data-motion-toggle]:hover, [data-motion-toggle]:focus-visible { color: #CC9D39; border-color: #CC9D39; }
+  /* De sprong tilt het beeld 84px op. De generieke figure-regel zet
+ overflow:hidden (voor de afgeronde hoeken van fotokaders); hier is dat
+ een vrijstaande PNG en sneed het de bal af. */
+  :where(.page-what-we-do) [data-register-figure] { overflow: visible; }
+
+/* ---- Lenis smooth scroll ------------------------------------------------ */
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+
+/* ===========================================================================
+   ELEMENT STYLES — extracted from the markup
+   One rule per style="" attribute that used to sit on the element. This block
+   is last in the file and carries no !important on purpose: an inline style
+   beat every ordinary rule but lost to every !important one, and being
+   last-but-not-important reproduces exactly that. Do not move it above the
+   rules it overrides, and do not add !important — the responsive sheet has to
+   keep outweighing these.
+   =========================================================================== */
+
+.sec-page-shell-home {
+  --shell:min(100vw - 170px, clamp(1270px, 104vw - 315px, 1680px));
+  position:relative;
+  width:100%;
+  min-width:1024px;
+  overflow-x:clip;
+  background:#F2F0EA;
+  font-family:'Hanken Grotesk',sans-serif;
+  color:#0B0B0B;
+}
+
+.u-grain {
+  position:fixed;
+  inset:0;
+  z-index:70;
+  pointer-events:none;
+  opacity:.045;
+  mix-blend-mode:multiply;
+  background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSczMDAnIGhlaWdodD0nMzAwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44NScgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcgcmVzdWx0PSd0Jy8+PGZlQ29sb3JNYXRyaXggaW49J3QnIHR5cGU9J21hdHJpeCcgdmFsdWVzPScwIDAgMCAwIDAgIDAgMCAwIDAgMCAgMCAwIDAgMCAwICAwIDAgMCAwLjg1IDAnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWx0ZXI9J3VybCgjbiknLz48L3N2Zz4=');
+  background-size:280px 280px;
+}
+
+/* Drievoudige klasse (0,3,0): deze regel verving een inline style, en een
+   inline style won van elke gewone regel. responsive.css heeft ".lsm-shell > header" (0,1,1) met een gewone z-index:90,
+   die anders wint. Dit herstelt de oude uitkomst zonder !important. */
+.hdr-overlay.hdr-overlay.hdr-overlay {
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  z-index:10;
+  background:transparent;
+  width:100%;
+}
+
+.hdr-inner {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:0 40px;
+  height:104px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.u-block {
+  display:block;
+}
+
+.hdr-logo-mark {
+  width:190px;
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+
+.hdr-actions {
+  display:flex;
+  align-items:center;
+  gap:40px;
+}
+
+.hdr-nav-list {
+  display:flex;
+  gap:36px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#F2F0EA;
+}
+
+.hdr-cta {
+  background:#CC9D39;
+  color:#0B0B0B;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:11px 22px;
+}
+
+.hero-band-home {
+  --content:calc(clamp(1180px, 104vw - 315px, 1680px) - 80px);
+  --pad-top:calc(104px + clamp(30px,6.2vh,80px));
+  --band:49px;
+  --h1:calc(var(--content) / 6.32);
+  --h1h:calc(var(--h1) * .82);
+  position:relative;
+  background:#000;
+  color:#F2F0EA;
+  width:100%;
+  overflow:hidden;
+}
+
+.hero-bg-image {
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:var(--band);
+  width:100%;
+  height:calc(100% - var(--band));
+  object-fit:cover;
+  object-position:50% 38%;
+  z-index:0;
+  display:block;
+}
+
+.hero-scrim {
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:var(--band);
+  z-index:1;
+  pointer-events:none;
+  background:linear-gradient(to right, rgba(0,0,0,.78) 0%, rgba(0,0,0,.62) 20%, rgba(0,0,0,.18) 40%, rgba(0,0,0,0) 56%),linear-gradient(to bottom, rgba(0,0,0,.62) 0%, rgba(0,0,0,.26) 34%, rgba(0,0,0,.34) 62%, rgba(0,0,0,.80) 100%);
+}
+
+.hero-shell-home {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:var(--pad-top) 40px clamp(48px,10vh,130px);
+  position:relative;
+  min-height:max(664px, calc(100vh - var(--band) - var(--wp-bar)));
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+
+.hero-row {
+  position:relative;
+  z-index:3;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:72px;
+}
+
+.hero-lead-col {
+  flex:1 1 auto;
+  min-width:0;
+}
+
+.hero-title-home {
+  position:relative;
+  z-index:1;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:var(--h1);
+  line-height:.82;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+  text-align:left;
+  white-space:normal;
+  margin-left:-.0435em;
+}
+
+.hero-subhead {
+  width:min(470px, calc(var(--content) * .345));
+  max-width:100%;
+  margin:36px 0 0;
+  text-wrap:balance;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:34px;
+  line-height:1.16;
+  letter-spacing:-.012em;
+  text-transform:uppercase;
+  color:#CC9D39;
+}
+
+.hero-side-col {
+  width:min(520px, calc(var(--content) * .3846));
+  max-width:100%;
+  flex:none;
+}
+
+.hero-intro {
+  margin-top:20px;
+  padding-top:18px;
+  border-top:1px solid rgba(242,240,234,.22);
+  font-size:17.5px;
+  font-weight:500;
+  line-height:1.6;
+  color:#F2F0EA;
+  text-wrap:pretty;
+}
+
+.hero-note {
+  margin-top:13px;
+  font-size:15.5px;
+  line-height:1.62;
+  color:rgba(242,240,234,.72);
+  text-wrap:pretty;
+}
+
+.hero-cta {
+  display:inline-block;
+  margin-top:30px;
+  background:#CC9D39;
+  color:#0B0B0B;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:19px 34px;
+}
+
+.mq-band {
+  background:#CC9D39;
+  overflow:hidden;
+  padding:13px 0;
+}
+
+.mq-track {
+  display:flex;
+  width:max-content;
+  will-change:transform;
+}
+
+.mq-set {
+  display:flex;
+  align-items:center;
+  flex:none;
+}
+
+.mq-item {
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:23px;
+  line-height:1;
+  letter-spacing:.005em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  padding:0 48px;
+  color:#FFFFFF;
+}
+
+.mq-star {
+  flex:none;
+  opacity:.9;
+}
+
+.sec-why-band {
+  position:relative;
+  overflow:hidden;
+  background:#181613;
+  color:#F2F0EA;
+  width:100%;
+  padding-top:132px;
+}
+
+.sec-ball-art {
+  width:100%;
+  height:auto;
+  display:none;
+}
+
+.sec-ball-particle-01 {
+  transform-box:fill-box;
+  transform-origin:28.1px 207.4px;
+}
+
+.sec-ball-particle-02 {
+  transform-box:fill-box;
+  transform-origin:11.5px 108.7px;
+}
+
+.sec-ball-particle-03 {
+  transform-box:fill-box;
+  transform-origin:62.4px 275.2px;
+}
+
+.sec-ball-particle-04 {
+  transform-box:fill-box;
+  transform-origin:46.5px -4.1px;
+}
+
+.sec-ball-particle-05 {
+  transform-box:fill-box;
+  transform-origin:-12.8px 378.6px;
+}
+
+.sec-ball-particle-06 {
+  transform-box:fill-box;
+  transform-origin:188.0px 35.9px;
+}
+
+.sec-ball-particle-07 {
+  transform-box:fill-box;
+  transform-origin:582.5px 409.2px;
+}
+
+.sec-ball-particle-08 {
+  transform-box:fill-box;
+  transform-origin:596.7px 510.8px;
+}
+
+.sec-ball-particle-09 {
+  transform-box:fill-box;
+  transform-origin:547.7px 343.4px;
+}
+
+.sec-ball-particle-10 {
+  transform-box:fill-box;
+  transform-origin:556.3px 625.2px;
+}
+
+.sec-ball-particle-11 {
+  transform-box:fill-box;
+  transform-origin:563.7px 217.7px;
+}
+
+.sec-ball-particle-12 {
+  transform-box:fill-box;
+  transform-origin:470.0px 32.9px;
+}
+
+.sec-ball-particle-13 {
+  transform-box:fill-box;
+  transform-origin:76.0px 609.4px;
+}
+
+.sec-ball-particle-14 {
+  transform-box:fill-box;
+  transform-origin:264.9px 566.1px;
+}
+
+.sec-ball-body {
+  transform-box:fill-box;
+}
+
+.sec-why-shell {
+  position:relative;
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:0 40px;
+}
+
+.sec-why-row {
+  display:flex;
+  flex-wrap:wrap;
+  gap:96px;
+  align-items:flex-start;
+}
+
+.sec-why-heading {
+  width:640px;
+  max-width:100%;
+  flex:none;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:96px;
+  line-height:.90;
+  letter-spacing:-.008em;
+  text-transform:uppercase;
+  margin-left:-5px;
+  color:#F2F0EA;
+}
+
+.sec-why-copy {
+  width:452px;
+  max-width:100%;
+  flex:none;
+  padding-top:11px;
+}
+
+.sec-why-lead {
+  font-size:17.5px;
+  font-weight:500;
+  line-height:1.62;
+  color:#F2F0EA;
+  text-wrap:pretty;
+}
+
+.sec-why-body {
+  margin-top:17px;
+  font-size:15.5px;
+  line-height:1.7;
+  color:rgba(242,240,234,.78);
+  text-wrap:pretty;
+}
+
+.sec-why-motif-band {
+  margin-top:88px;
+  border-top:1px solid rgba(255,255,255,.16);
+  border-bottom:1px solid rgba(255,255,255,.16);
+}
+
+.sec-why-motif-canvas {
+  width:100%;
+  height:210px;
+}
+
+.sec-why-statement {
+  margin:96px auto 0;
+  max-width:1150px;
+  text-align:center;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:78px;
+  line-height:.98;
+  letter-spacing:-.006em;
+  text-transform:uppercase;
+}
+
+.u-accent-text {
+  color:#CC9D39;
+}
+
+.sec-why-note {
+  margin:52px auto 0;
+  width:530px;
+  max-width:100%;
+  text-align:center;
+  font-size:15.5px;
+  line-height:1.7;
+  color:rgba(242,240,234,.78);
+  text-wrap:pretty;
+}
+
+.sec-why-figure {
+  position:relative;
+  margin-top:112px;
+  width:100%;
+  height:620px;
+  overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.16);
+  border-bottom:1px solid rgba(255,255,255,.16);
+}
+
+.sec-why-figure-image {
+  position:absolute;
+  left:0;
+  top:-8%;
+  width:100%;
+  height:116%;
+  object-fit:cover;
+  object-position:center 30%;
+  display:block;
+}
+
+.pillar-band {
+  position:relative;
+  z-index:2;
+  background:#F2F0EA;
+  width:100%;
+  padding-top:152px;
+  padding-bottom:92px;
+}
+
+.pillar-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:0 40px;
+}
+
+.pillar-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  padding-bottom:22px;
+  border-bottom:1px solid rgba(11,11,11,.28);
+}
+
+.pillar-title {
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:58px;
+  line-height:.9;
+  letter-spacing:-.004em;
+  text-transform:uppercase;
+  margin-left:-3px;
+}
+
+.u-section-label {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.6);
+}
+
+.pillar-row {
+  display:flex;
+  flex-wrap:wrap;
+  gap:88px;
+  padding:56px 0 60px;
+  width:100%;
+  border-bottom:1px solid rgba(11,11,11,.16);
+}
+
+.pillar-label {
+  width:150px;
+  max-width:100%;
+  flex:none;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.55);
+  padding-top:16px;
+}
+
+.pillar-claim-01 {
+  width:566px;
+  max-width:100%;
+  flex:none;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:52px;
+  line-height:.96;
+  letter-spacing:-.004em;
+  text-transform:uppercase;
+}
+
+.pillar-copy {
+  flex:1;
+  padding-top:16px;
+  font-size:15.5px;
+  line-height:1.7;
+  color:rgba(11,11,11,.74);
+  text-wrap:pretty;
+}
+
+.pillar-claim-02 {
+  width:566px;
+  max-width:100%;
+  flex:none;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:52px;
+  line-height:.96;
+  letter-spacing:-.002em;
+  text-transform:uppercase;
+}
+
+.pillar-claim-03 {
+  width:566px;
+  max-width:100%;
+  flex:none;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:52px;
+  line-height:.96;
+  letter-spacing:0;
+  text-transform:uppercase;
+}
+
+.pillar-copy-flush {
+  flex:1;
+  font-size:15.5px;
+  line-height:1.7;
+  color:rgba(11,11,11,.74);
+  text-wrap:pretty;
+}
+
+.pillar-row-04 {
+  display:flex;
+  flex-wrap:wrap;
+  gap:88px;
+  padding:56px 0 60px;
+  width:100%;
+}
+
+.pillar-claim-04 {
+  width:566px;
+  max-width:100%;
+  flex:none;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:52px;
+  line-height:.96;
+  letter-spacing:-.012em;
+  text-transform:uppercase;
+}
+
+.sec-band-dark {
+  position:relative;
+  background:#000;
+  color:#F2F0EA;
+  width:100%;
+  overflow:hidden;
+}
+
+.sec-philosophy-figure {
+  position:absolute;
+  left:0;
+  top:56px;
+  width:508px;
+  max-width:100%;
+  aspect-ratio:1/1;
+  overflow:hidden;
+}
+
+.u-frame-image {
+  position:absolute;
+  left:0;
+  top:-8%;
+  width:100%;
+  height:116%;
+  object-fit:cover;
+  display:block;
+}
+
+.sec-philosophy-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:120px 40px 128px;
+  position:relative;
+}
+
+.sec-philosophy-cols {
+  display:flex;
+  flex-wrap:wrap;
+  gap:0;
+}
+
+.sec-philosophy-gutter {
+  flex:0 1 472px;
+  max-width:472px;
+}
+
+.sec-philosophy-copy {
+  flex:1 1 380px;
+  min-width:0;
+}
+
+.sec-philosophy-title {
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:74px;
+  line-height:.94;
+  letter-spacing:-.006em;
+  text-transform:uppercase;
+}
+
+.sec-philosophy-lead {
+  margin-top:38px;
+  width:466px;
+  max-width:100%;
+  font-size:15.5px;
+  line-height:1.7;
+  color:rgba(242,240,234,.78);
+  text-wrap:pretty;
+}
+
+.mq-plain-band {
+  position:relative;
+  z-index:2;
+  margin:105px 0 0 calc(50% - 50vw);
+  width:100vw;
+  overflow:hidden;
+}
+
+.mq-plain-word {
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:188px;
+  line-height:.88;
+  letter-spacing:-.012em;
+  text-transform:uppercase;
+  color:#5E5E58;
+  white-space:nowrap;
+  padding:0 88px;
+}
+
+.roster-band {
+  scroll-margin-top:120px;
+  background:#F2F0EA;
+  width:100%;
+}
+
+.roster-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:104px 40px 120px;
+}
+
+.roster-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(11,11,11,.28);
+}
+
+.roster-title {
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:58px;
+  line-height:.9;
+  text-transform:uppercase;
+  margin-left:-3px;
+}
+
+.roster-grid {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  column-gap:30px;
+  row-gap:52px;
+  margin-top:56px;
+}
+
+.roster-card {
+  max-width:100%;
+}
+
+.roster-card-media {
+  position:relative;
+  aspect-ratio:3/4;
+  overflow:hidden;
+}
+
+.roster-card-image {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.roster-card-name {
+  margin-top:16px;
+  font-size:19px;
+  line-height:1.2;
+  letter-spacing:-.01em;
+}
+
+.roster-card-meta {
+  margin-top:7px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.6);
+  white-space:nowrap;
+}
+
+.cta-band {
+  background:#000;
+  color:#F2F0EA;
+  width:100%;
+}
+
+.cta-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:128px 40px 132px;
+  text-align:center;
+}
+
+.cta-title-home {
+  max-width:1180px;
+  margin:0 auto;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:172px;
+  line-height:.84;
+  letter-spacing:-.014em;
+  text-transform:uppercase;
+}
+
+.cta-button {
+  display:inline-block;
+  margin-top:56px;
+  background:#CC9D39;
+  color:#0B0B0B;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:21px 40px;
+}
+
+.ftr-band {
+  background:#000;
+  color:rgba(242,240,234,.7);
+  width:100%;
+  padding:150px 0 130px;
+}
+
+.ftr-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:44px 40px 56px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+
+.ftr-brand {
+  display:flex;
+  align-items:flex-end;
+  gap:32px;
+}
+
+.ftr-logo-mark {
+  width:56px;
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+
+.ftr-credit {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:rgba(242,240,234,.72);
+}
+
+.ftr-nav-list {
+  display:flex;
+  gap:40px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#F2F0EA;
+}
+
+.sec-page-shell {
+  --shell:min(100vw - 170px, clamp(1270px, 104vw - 315px, 1680px));
+  width:100%;
+  min-width:1024px;
+  overflow-x:clip;
+  background:#F2F0EA;
+  font-family:'Hanken Grotesk',sans-serif;
+  color:#0B0B0B;
+}
+
+.u-band-black {
+  background:#000;
+  width:100%;
+}
+
+.u-link-light {
+  color:#F2F0EA;
+}
+
+.hero-band-interior {
+  position:relative;
+  width:100%;
+}
+
+.hero-shell-interior {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:80px 40px 116px;
+  position:relative;
+}
+
+.hero-figure-what-we-do {
+  position:absolute;
+  top:80px;
+  right:-40px;
+  width:min(660px, calc(100vw - 920px));
+  max-width:100%;
+  aspect-ratio:3/2;
+  z-index:1;
+  overflow:hidden;
+}
+
+.hero-title-what-we-do {
+  position:relative;
+  z-index:2;
+  width:840px;
+  max-width:100%;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:118px;
+  line-height:.92;
+  letter-spacing:-.01em;
+  margin-left:-6px;
+  text-transform:uppercase;
+}
+
+.hero-lede-interior {
+  position:relative;
+  z-index:2;
+  margin-top:32px;
+  width:460px;
+  max-width:100%;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:26px;
+  line-height:1.3;
+  letter-spacing:-.008em;
+  text-transform:uppercase;
+}
+
+.sec-band-light {
+  background:#F2F0EA;
+  width:100%;
+}
+
+.step-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:112px 40px 128px;
+}
+
+.step-intro {
+  text-align:center;
+  margin-bottom:72px;
+}
+
+.step-intro-label {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.5);
+}
+
+.step-intro-active {
+  margin-top:14px;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:32px;
+  line-height:1.2;
+  letter-spacing:-.008em;
+  text-transform:uppercase;
+  color:#CC9D39;
+}
+
+.step-spine-wrap {
+  width:1268px;
+  max-width:100%;
+  margin:0 auto;
+  position:relative;
+}
+
+.step-ball-track {
+  position:absolute;
+  left:40px;
+  top:0;
+  width:260px;
+  height:100%;
+  pointer-events:none;
+  z-index:0;
+}
+
+.step-ball-shadow {
+  position:absolute;
+  left:0;
+  top:0;
+  width:260px;
+  height:38px;
+  border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(11,11,11,.38) 0%, rgba(11,11,11,.16) 45%, rgba(11,11,11,0) 72%);
+}
+
+.step-ball-image {
+  position:absolute;
+  left:0;
+  top:0;
+  width:260px;
+  height:260px;
+  display:block;
+  filter:drop-shadow(0 18px 26px rgba(11,11,11,.22));
+}
+
+.step-spine-line {
+  position:absolute;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:rgba(11,11,11,.2);
+  transform:translateX(-.5px) scaleY(0);
+  transform-origin:top center;
+}
+
+.step-list {
+  position:relative;
+}
+
+.step-row {
+  position:relative;
+  display:grid;
+  grid-template-columns:1fr 44px 1fr;
+  align-items:center;
+  padding:30px 0;
+  border-bottom:1px solid rgba(11,11,11,.14);
+}
+
+.step-word {
+  text-align:right;
+  padding-right:26px;
+  margin:0;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:48px;
+  line-height:.96;
+  letter-spacing:-.012em;
+  text-transform:uppercase;
+}
+
+.step-chip {
+  justify-self:center;
+  width:44px;
+  height:26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#F2F0EA;
+  border:1px solid rgba(11,11,11,.28);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.1em;
+  color:rgba(11,11,11,.6);
+}
+
+.step-copy {
+  padding-left:26px;
+}
+
+.step-claim {
+  margin:0;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:600;
+  font-size:21px;
+  line-height:1.12;
+  letter-spacing:-.004em;
+  text-transform:uppercase;
+}
+
+.step-body {
+  margin-top:10px;
+  max-width:420px;
+  font-size:14.5px;
+  line-height:1.62;
+  color:rgba(11,11,11,.72);
+  text-wrap:pretty;
+}
+
+.cta-line-media {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:0;
+}
+
+.cta-line-scrim {
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(90deg, rgba(0,0,0,.88) 0%, rgba(0,0,0,.66) 48%, rgba(0,0,0,.80) 100%);
+}
+
+.cta-line-shell {
+  position:relative;
+  z-index:2;
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:150px 40px 156px;
+}
+
+.cta-line-title {
+  margin:0;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:92px;
+  line-height:1.06;
+  letter-spacing:-.01em;
+  text-transform:uppercase;
+}
+
+.cta-line-second {
+  display:block;
+  margin-left:180px;
+}
+
+.cta-line-third {
+  display:block;
+  margin-left:360px;
+  color:#CC9D39;
+}
+
+.stage-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:120px 40px 132px;
+}
+
+.stage-heading {
+  margin:0;
+  text-align:center;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:82px;
+  line-height:.96;
+  letter-spacing:-.01em;
+  text-transform:uppercase;
+}
+
+.stage-row {
+  margin-top:84px;
+  display:flex;
+  align-items:stretch;
+  justify-content:center;
+  gap:64px;
+}
+
+.stage-col-left {
+  flex:1;
+  max-width:400px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:134px;
+  align-items:flex-end;
+}
+
+.stage-entry-left {
+  border-right:1px solid rgba(11,11,11,.2);
+  padding-right:22px;
+  text-align:right;
+  padding-top:6px;
+  padding-bottom:6px;
+}
+
+.stage-number {
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.18em;
+  color:#CC9D39;
+}
+
+.stage-name {
+  margin:6px 0 0;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:700;
+  font-size:34px;
+  line-height:1.02;
+  letter-spacing:-.012em;
+  text-transform:uppercase;
+}
+
+.stage-figure {
+  position:relative;
+  flex:none;
+  margin:0;
+  width:227px;
+  max-width:18vw;
+  padding-bottom:52px;
+}
+
+.stage-figure-shadow {
+  position:absolute;
+  left:50%;
+  bottom:14px;
+  width:92%;
+  height:44px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  filter:blur(13px);
+  background:radial-gradient(ellipse at center, rgba(11,11,11,.52) 0%, rgba(11,11,11,.26) 44%, rgba(11,11,11,0) 76%);
+}
+
+.stage-figure-image {
+  position:relative;
+  width:100%;
+  height:auto;
+  display:block;
+}
+
+.stage-col-right {
+  flex:1;
+  max-width:400px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:134px;
+  align-items:flex-start;
+}
+
+.stage-entry-right {
+  border-left:1px solid rgba(11,11,11,.2);
+  padding-left:22px;
+  text-align:left;
+  padding-top:6px;
+  padding-bottom:6px;
+}
+
+.stage-note {
+  margin:0;
+  padding-left:22px;
+  border-left:1px solid rgba(11,11,11,.2);
+  font-size:15.5px;
+  line-height:1.68;
+  color:rgba(11,11,11,.74);
+  text-wrap:pretty;
+}
+
+.cta-title-what-we-do {
+  max-width:1180px;
+  margin:0 auto;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:150px;
+  line-height:.86;
+  letter-spacing:-.014em;
+  text-transform:uppercase;
+}
+
+.hero-figure-about {
+  position:absolute;
+  top:80px;
+  right:-40px;
+  width:500px;
+  max-width:100%;
+  aspect-ratio:1/1;
+  z-index:1;
+  overflow:hidden;
+}
+
+.hero-title-about {
+  position:relative;
+  z-index:2;
+  width:820px;
+  max-width:100%;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:110px;
+  line-height:.92;
+  letter-spacing:-.01em;
+  margin-left:-6px;
+  text-transform:uppercase;
+}
+
+.panel-viewport {
+  height:calc(100vh - var(--wp-bar));
+  overflow-x:auto;
+  overflow-y:hidden;
+  position:relative;
+}
+
+.panel-track {
+  display:flex;
+  height:100%;
+  width:max-content;
+  will-change:transform;
+}
+
+.panel-shell-lead {
+  flex:none;
+  width:1040px;
+  height:100%;
+  background:#000;
+  color:#F2F0EA;
+  padding:0 76px;
+  display:flex;
+  align-items:center;
+  gap:120px;
+  border-right:1px solid rgba(242,240,234,.22);
+}
+
+.panel-media {
+  position:relative;
+  width:340px;
+  flex:none;
+  aspect-ratio:4/5;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.panel-copy {
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+
+.panel-number-dark {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(242,240,234,.5);
+}
+
+.panel-name {
+  margin-top:20px;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:78px;
+  line-height:.9;
+  letter-spacing:-.014em;
+  text-transform:uppercase;
+}
+
+.panel-role {
+  margin-top:14px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#CC9D39;
+}
+
+.panel-bio-dark {
+  margin-top:26px;
+  max-width:400px;
+  font-size:16px;
+  line-height:1.7;
+  color:rgba(242,240,234,.8);
+  text-wrap:pretty;
+}
+
+.panel-tail-dark {
+  margin-top:34px;
+  padding-top:18px;
+  border-top:1px solid rgba(242,240,234,.22);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(242,240,234,.5);
+}
+
+.panel-shell-light {
+  flex:none;
+  width:880px;
+  height:100%;
+  background:#F2F0EA;
+  color:#0B0B0B;
+  padding:0 76px;
+  display:flex;
+  align-items:center;
+  gap:60px;
+  border-right:1px solid rgba(11,11,11,.22);
+}
+
+.panel-number-light {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.5);
+}
+
+.panel-bio-light {
+  margin-top:26px;
+  max-width:400px;
+  font-size:16px;
+  line-height:1.7;
+  color:rgba(11,11,11,.76);
+  text-wrap:pretty;
+}
+
+.panel-tail-light {
+  margin-top:34px;
+  padding-top:18px;
+  border-top:1px solid rgba(11,11,11,.22);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.5);
+}
+
+.panel-shell-dark {
+  flex:none;
+  width:880px;
+  height:100%;
+  background:#000;
+  color:#F2F0EA;
+  padding:0 76px;
+  display:flex;
+  align-items:center;
+  gap:60px;
+  border-right:1px solid rgba(242,240,234,.22);
+}
+
+.panel-placeholder-dark {
+  position:relative;
+  width:340px;
+  flex:none;
+  aspect-ratio:4/5;
+  background:linear-gradient(150deg,rgba(255,255,255,.08),rgba(255,255,255,.014) 62%),linear-gradient(to top right,transparent calc(50% - .5px),rgba(255,255,255,.10) calc(50% - .5px),rgba(255,255,255,.10) calc(50% + .5px),transparent calc(50% + .5px));
+  border:1px solid rgba(255,255,255,.16);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.panel-caption-dark {
+  position:absolute;
+  left:14px;
+  top:12px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.13em;
+  color:rgba(242,240,234,.5);
+}
+
+.panel-placeholder-mark {
+  width:78px;
+  height:78px;
+  border:1px solid rgba(242,240,234,.22);
+  transform:rotate(45deg);
+}
+
+.panel-placeholder-light {
+  position:relative;
+  width:340px;
+  flex:none;
+  aspect-ratio:4/5;
+  background:linear-gradient(150deg,rgba(11,11,11,.09),rgba(11,11,11,.02) 62%),linear-gradient(to top right,transparent calc(50% - .5px),rgba(11,11,11,.14) calc(50% - .5px),rgba(11,11,11,.14) calc(50% + .5px),transparent calc(50% + .5px));
+  border:1px solid rgba(11,11,11,.2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.panel-caption-light {
+  position:absolute;
+  left:14px;
+  top:12px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.13em;
+  color:rgba(11,11,11,.5);
+}
+
+.panel-progress-bar {
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:9;
+  pointer-events:none;
+  padding:0 76px 34px;
+  display:flex;
+  align-items:center;
+  gap:22px;
+  mix-blend-mode:difference;
+}
+
+.panel-progress-count {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.2em;
+  color:#CC9D39;
+}
+
+.panel-progress-track {
+  flex:1;
+  height:1px;
+  background:rgba(128,128,128,.5);
+  position:relative;
+  display:block;
+}
+
+.panel-progress-fill {
+  position:absolute;
+  left:0;
+  top:0;
+  height:1px;
+  width:100%;
+  background:#CC9D39;
+  transform:scaleX(0);
+  transform-origin:left center;
+  display:block;
+}
+
+.panel-progress-hint {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(128,128,128,.9);
+}
+
+.cta-title-about {
+  max-width:1180px;
+  margin:0 auto;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:112px;
+  line-height:.88;
+  letter-spacing:-.012em;
+  text-transform:uppercase;
+}
+
+.cta-button-about {
+  display:inline-block;
+  margin-top:52px;
+  background:#CC9D39;
+  color:#0B0B0B;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:21px 40px;
+}
+
+.hero-band-contact {
+  width:100%;
+}
+
+.hero-shell-contact {
+  max-width:var(--shell);
+  margin:0 auto;
+  position:relative;
+  padding:80px 40px 64px;
+}
+
+.hero-title-contact {
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:96px;
+  line-height:.92;
+  letter-spacing:-.01em;
+  margin-left:-5px;
+  text-transform:uppercase;
+}
+
+.hero-lede-contact {
+  margin-top:26px;
+  width:440px;
+  max-width:100%;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:25px;
+  line-height:1.32;
+  letter-spacing:-.008em;
+  text-transform:uppercase;
+}
+
+.form-band {
+  width:100%;
+  border-top:1px solid rgba(11,11,11,.22);
+}
+
+.form-layout {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:0 40px 128px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:80px;
+  align-items:flex-start;
+}
+
+.form-shell {
+  flex:1;
+  max-width:760px;
+  padding-top:56px;
+}
+
+.form-row {
+  display:flex;
+  gap:28px;
+}
+
+.form-field {
+  flex:1;
+}
+
+.form-label {
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  font-weight:500;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#0B0B0B;
+}
+
+.form-row-spaced {
+  margin-top:28px;
+  display:flex;
+  gap:28px;
+}
+
+.form-fieldset {
+  margin-top:32px;
+}
+
+.form-legend {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  font-weight:500;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#0B0B0B;
+  margin-bottom:12px;
+}
+
+.form-choice-row {
+  display:flex;
+  gap:28px;
+  flex-wrap:wrap;
+}
+
+/* Drievoudige klasse (0,3,0): deze regel verving een inline style, en een
+   inline style won van elke gewone regel. responsive.css heeft ".lsm-shell label:has(> input[type=radio])" (0,2,2) met een gewone align-items:center,
+   die anders wint. Dit herstelt de oude uitkomst zonder !important. */
+.form-choice.form-choice.form-choice {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:14.5px;
+}
+
+.form-row-wrap {
+  margin-top:28px;
+  display:flex;
+  gap:28px;
+  flex-wrap:wrap;
+}
+
+.form-field-min {
+  flex:1;
+  min-width:220px;
+}
+
+.form-field-full {
+  margin-top:28px;
+}
+
+.form-message {
+  resize:vertical;
+}
+
+/* Drievoudige klasse (0,3,0): deze regel verving een inline style, en een
+   inline style won van elke gewone regel. responsive.css heeft ".lsm-shell label:has(> input[type=checkbox])" (0,2,2) met een gewone align-items:center,
+   die anders wint. Dit herstelt de oude uitkomst zonder !important. */
+.form-consent.form-consent.form-consent {
+  margin-top:28px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  font-size:13.5px;
+  line-height:1.5;
+  color:rgba(11,11,11,.7);
+}
+
+.form-consent-box {
+  margin-top:3px;
+}
+
+.form-submit {
+  display:block;
+  margin-left:auto;
+  margin-top:36px;
+  background:#CC9D39;
+  color:#0B0B0B;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:19px 40px;
+  border:none;
+  cursor:pointer;
+}
+
+.form-side-photo {
+  width:455px;
+  max-width:100%;
+  flex:none;
+  margin:-245px 0 0 auto;
+  position:relative;
+  aspect-ratio:910/1264;
+  overflow:hidden;
+}
+
+.form-side-photo-image {
+  position:absolute;
+  left:0;
+  top:-6%;
+  width:100%;
+  height:112%;
+  object-fit:cover;
+  display:block;
+}
+
+.cta-shell-contact {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:128px 40px 132px;
+}
+
+.cta-title-contact {
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:120px;
+  line-height:.88;
+  letter-spacing:-.012em;
+  text-transform:uppercase;
+  text-align:center;
+}
+
+/* Contact Form 7 wraps its form in a div of its own. .form-layout is a flex
+   row whose items are the form and the photograph, so that wrapper has to pass
+   layout straight through rather than become an item itself. */
+.wpcf7 {
+  display:contents;
+}
+
+/* CF7 puts a loading spinner after the submit. It is hidden at rest but still
+   reserves 24px of inline-block, which pushed the form 29px taller than the
+   design. Taken out of flow until it is actually spinning. Scoped through
+   .form-shell so it beats the plugin's own rule whichever sheet loads first. */
+.form-shell .wpcf7-spinner {
+  display:none;
+}
+
+.form-shell.submitting .wpcf7-spinner {
+  display:inline-block;
+}
+
+/* ===========================================================================
+   PRIVACY POLICY AND 404
+   Two pages the static build never had, so there is no reference to match -
+   these are designed from the same tokens as the rest of the site and nothing
+   else: cream #F2F0EA, black #0B0B0B, gold #CC9D39, Big Shoulders Display for
+   display type, Hanken Grotesk for prose, IBM Plex Mono for labels.
+
+   Both sit between the black header band and the black footer, so both use the
+   cream band - a black section here would run straight into the footer.
+
+   The element resets at the top of this sheet are scoped per page class, so
+   these two pages need their own or headings arrive with the browser's default
+   margins. Same :where() wrapper, same zero specificity, same reason.
+   =========================================================================== */
+
+:where(.page-legal) h1,
+:where(.page-legal) h2,
+:where(.page-legal) h3,
+:where(.page-legal) h4,
+:where(.page-legal) p,
+:where(.page-legal) ul,
+:where(.page-legal) ol,
+:where(.page-legal) li,
+:where(.page-error) h1,
+:where(.page-error) h2,
+:where(.page-error) h3,
+:where(.page-error) p,
+:where(.page-error) ul,
+:where(.page-error) li { margin: 0; padding: 0; }
+
+/* ---- shared: the small mono label both pages open with ------------------ */
+.legal-label,
+.err-label {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#CC9D39;
+}
+
+/* ---- privacy policy, and any other legal page ---------------------------
+   A centred opening, then the policy in a reading column with its contents
+   list alongside. The list is sticky so it stays with you through a long
+   document and shows where you are.                                        */
+.legal-band {
+  background:#F2F0EA;
+  width:100%;
+}
+
+.legal-head {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:80px 40px 72px;
+  text-align:center;
+}
+
+.legal-title {
+  margin-top:22px;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:96px;
+  line-height:.92;
+  letter-spacing:-.01em;
+  text-transform:uppercase;
+}
+
+.legal-intro {
+  margin:28px auto 0;
+  width:780px;
+  max-width:100%;
+  font-size:17px;
+  line-height:1.7;
+  color:rgba(11,11,11,.72);
+}
+
+.legal-updated {
+  margin-top:26px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.5);
+}
+
+/* The hairline is on the columns, not the opening, so it runs the full width
+   of the page the way the section rules elsewhere do. */
+.legal-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:72px 40px 128px;
+  border-top:1px solid rgba(11,11,11,.22);
+  display:flex;
+  align-items:flex-start;
+  gap:96px;
+}
+
+/* ---- contents ---- */
+.legal-toc {
+  position:sticky;
+  top:56px;
+  flex:0 0 300px;
+  max-width:300px;
+}
+
+.legal-toc-title {
+  padding-bottom:14px;
+  border-bottom:1px solid rgba(11,11,11,.22);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.5);
+}
+
+/* The numbers are drawn by .legal-toc-number, so the list must not also draw
+   its own - only `ul` is reset at the top of this sheet, not `ol`. */
+.legal-toc-list {
+  margin-top:8px;
+  list-style:none;
+}
+
+.legal-toc-link {
+  display:flex;
+  gap:12px;
+  padding:11px 14px;
+  font-size:14.5px;
+  line-height:1.4;
+  color:rgba(11,11,11,.62);
+  border-left:2px solid transparent;
+}
+
+.legal-toc-number {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.06em;
+  color:rgba(11,11,11,.38);
+  padding-top:1px;
+}
+
+.legal-toc-link:hover {
+  color:#0B0B0B;
+}
+
+/* The section you are reading. Marked with aria-current rather than a class so
+   the state is announced as well as drawn - assets/js/legal.js sets it. */
+.legal-toc-link[aria-current="true"] {
+  background:rgba(204,157,57,.12);
+  border-left-color:#CC9D39;
+  color:#0B0B0B;
+  font-weight:500;
+}
+
+.legal-toc-link[aria-current="true"] .legal-toc-number {
+  color:#CC9D39;
+}
+
+/* ---- the policy ---- */
+.legal-prose {
+  flex:1;
+  min-width:0;
+  max-width:68ch;
+  font-size:16.5px;
+  line-height:1.75;
+  color:rgba(11,11,11,.78);
+}
+
+.legal-prose > * + * {
+  margin-top:22px;
+}
+
+.legal-chapter {
+  margin-top:64px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#CC9D39;
+}
+
+/* The first chapter label sits level with the top of the contents list. */
+.legal-prose > .legal-chapter:first-child {
+  margin-top:0;
+}
+
+.legal-prose h2 {
+  margin-top:14px;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:34px;
+  line-height:1.1;
+  letter-spacing:-.005em;
+  text-transform:uppercase;
+  color:#0B0B0B;
+  /* So an anchored heading is not hidden under the top of the window. */
+  scroll-margin-top:40px;
+}
+
+.legal-prose h3 {
+  margin-top:36px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  font-weight:500;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#0B0B0B;
+}
+
+.legal-prose ul,
+.legal-prose ol {
+  padding-left:22px;
+}
+
+.legal-prose ul {
+  list-style:disc;
+}
+
+.legal-prose ol {
+  list-style:decimal;
+}
+
+.legal-prose li + li {
+  margin-top:10px;
+}
+
+.legal-prose li::marker {
+  color:#CC9D39;
+}
+
+.legal-prose strong {
+  font-weight:500;
+  color:#0B0B0B;
+}
+
+/* Links carry an underline here, unlike the rest of the site: in running prose
+   colour alone is not enough to mark a link (SC 1.4.1). */
+.legal-prose a {
+  color:#0B0B0B;
+  text-decoration:underline;
+  text-decoration-color:#CC9D39;
+  text-underline-offset:3px;
+}
+
+.legal-prose a:hover {
+  color:#CC9D39;
+}
+
+/* ---- 404 ----------------------------------------------------------------
+   Cream, like the interior pages: the black header sits above it and the black
+   footer below, so a black band here would run into the footer.             */
+.err-band {
+  background:#F2F0EA;
+  width:100%;
+}
+
+.err-shell {
+  max-width:var(--shell);
+  margin:0 auto;
+  padding:140px 40px 160px;
+  text-align:center;
+}
+
+/* Sized like an interior hero title, so a reader who lands here still
+   recognises the house voice. */
+.err-code {
+  margin-top:22px;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  font-size:96px;
+  line-height:.92;
+  letter-spacing:-.01em;
+  text-transform:uppercase;
+}
+
+.err-lede {
+  margin:26px auto 0;
+  width:540px;
+  max-width:100%;
+  font-size:16.5px;
+  line-height:1.75;
+  color:rgba(11,11,11,.72);
+}
+
+.err-button {
+  display:inline-block;
+  margin-top:44px;
+  background:#CC9D39;
+  color:#0B0B0B;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:21px 40px;
+  border-radius:5px;
+}
+
+/* A hairline above the shortcuts, the same rule weight the form fields use. */
+.err-links {
+  margin:72px auto 0;
+  padding-top:34px;
+  border-top:1px solid rgba(11,11,11,.22);
+  width:640px;
+  max-width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  /* No row gap: the padding on each link supplies the spacing, and doubling
+     the two would push them apart. */
+  gap:0 28px;
+}
+
+/* The padding is the tap target, not decoration. At 12px mono the text box is
+   15px tall, well under the 24px WCAG 2.5.5 minimum; this takes it to 45px.
+   The horizontal padding is folded back out of the column gap above so the
+   spacing between links looks unchanged. */
+.err-link {
+  padding:15px 6px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(11,11,11,.62);
+}
+
+.err-link:hover {
+  color:#CC9D39;
+}

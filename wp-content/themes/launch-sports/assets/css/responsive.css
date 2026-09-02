@@ -1,0 +1,750 @@
+/* ===========================================================================
+   LAUNCH SPORTS MANAGEMENT — RESPONSIVE STYLESHEET
+   Every viewport media query for all four pages, in original cascade order.
+   Loads after assets/css/desktop.css.
+
+   Page-specific rules carry :where(.page-…) — see assets/css/desktop.css for why.
+
+   Breakpoints in use — all fourteen, in the order they appear:
+     max-width 1023px               phone + small tablet (the big mobile block)
+     max-width 344px                nested in the above; smallest phones
+     max-width 767px                phone only (micro-labels)
+     min-width 768px  - 1023px      tablet band
+     min-width 1024px               desktop and up (footer credit, motion toggle)
+     min-width 1024px - 1199px      small desktop
+     min-width 1200px               desktop and up (closing section / footer overlap)
+     min-width 1200px - 1439px      desktop
+     min-width 1440px - 1679px      wide
+     min-width 1680px               extra wide (4-up roster)
+     min-width 1800px               hero ball sits beside the intro copy
+     max-width 1799px               below that it drops under the copy
+     max-height 940px               short viewport, trims hero padding
+     max-height 860px               shorter still, also trims hero type
+   =========================================================================== */
+
+/* ==================================================================
+   MOBIEL — alles onder 1024px.
+
+   Deze build is ontworpen op 1440px en hoger; 1024-1439 volgt dezelfde
+   opmaak met een smallere kolom. Elke maat in de markup
+   gaat daarvan uit. Die maten staan inline, dus ze zijn alleen met
+   !important te overschrijven. Dat is lelijk maar het alternatief is
+   de hele markup herschrijven. Bij een productiebuild horen deze
+   waarden naar klassen te verhuizen.
+   ================================================================== */
+@media screen and (max-width: 782px) {
+  /* the admin bar is 46px tall on small screens */
+  body.admin-bar { --wp-bar: 46px; }
+}
+@media (max-width: 1023px) {
+  /* overflow-x:hidden dwingt de y-as naar 'auto' en dat gaf .lsm-shell een eigen
+     scrollbalk — een grijze streep langs de rechterrand. 'clip' snijdt
+     horizontaal af zonder een scrollcontainer te maken. */
+  .lsm-shell { min-width: 0 !important; overflow-x: clip !important; overflow-y: visible !important; }
+  .lsm-shell *:not([data-mq-track]):not([data-mq-set]) { max-width: 100% !important; }
+
+  /* buitenmarges terug van 40 naar 20 */
+  .lsm-shell > header > div, .lsm-shell section > div, .lsm-shell footer > div,
+  .lsm-shell section > div > div { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* rijen worden kolommen */
+  .lsm-shell section div:is(.form-choice-row, .form-layout, .form-row, .form-row-spaced, .form-row-wrap, .hero-row, .hero-shell-home, .mq-set, .mq-track, .panel-copy, .panel-progress-bar, .panel-track, .pillar-header, .roster-header, .sec-philosophy-cols, .sec-why-row, .stage-col-left, .stage-col-right, .stage-row) { flex-wrap: wrap !important; gap: 28px !important; }
+  .lsm-shell section div:is(.hero-shell-home, .panel-copy, .stage-col-left, .stage-col-right) { gap: 28px !important; }
+
+  /* vaste kolombreedtes vrijgeven */
+  .lsm-shell section p, .lsm-shell section h1, .lsm-shell section h2, .lsm-shell section h3,
+  .lsm-shell section > div > div, .lsm-shell section article > * { width: auto !important; }
+
+  /* absoluut geplaatst beeld terug in de leesvolgorde */
+  .lsm-shell section figure:is(.hero-figure-about, .hero-figure-what-we-do, .sec-philosophy-figure) {
+    position: static !important; width: 100% !important; margin: 28px 0 0 !important;
+    right: auto !important; left: auto !important; top: auto !important; }
+
+  /* de reuzentypografie schaalt terug op de vensterbreedte */
+  .lsm-shell h1 { font-size: clamp(40px, 12vw, 88px) !important; white-space: normal !important;
+             text-align: left !important; margin-left: 0 !important; }
+  .lsm-shell h2 { font-size: clamp(30px, 8.5vw, 60px) !important; margin-left: 0 !important; }
+  .lsm-shell h3 { font-size: clamp(24px, 6.5vw, 42px) !important; margin-left: 0 !important; }
+  .lsm-shell h1, .lsm-shell h2, .lsm-shell h3, .lsm-shell .xl, .lsm-shell article p, .lsm-shell section legend
+    { margin-left: 0 !important; text-indent: 0 !important; }
+
+  /* grote display-alinea's schalen ook mee, niet alleen de koppen */
+  .lsm-shell .xl { font-size: clamp(28px, 8vw, 56px) !important; margin-left: 0 !important;
+              white-space: normal !important; letter-spacing: -.01em !important; }
+/* decoratie die alleen op groot scherm werkt */
+:where(.page-home) .lsm-shell [data-motif],
+:where(.page-home) .lsm-shell [data-basketball],
+:where(.page-home) .lsm-shell [data-ball-index],
+:where(.page-home) .lsm-shell [data-register-figure],
+:where(.page-home) .lsm-shell [data-mq-plain],
+:where(.page-home) .lsm-shell [data-grid],
+:where(.page-about) .lsm-shell [data-motif],
+:where(.page-about) .lsm-shell [data-basketball],
+:where(.page-about) .lsm-shell [data-ball-index],
+:where(.page-about) .lsm-shell [data-register-figure],
+:where(.page-about) .lsm-shell [data-mq-plain],
+:where(.page-about) .lsm-shell [data-grid],
+:where(.page-lets-talk) .lsm-shell [data-motif],
+:where(.page-lets-talk) .lsm-shell [data-basketball],
+:where(.page-lets-talk) .lsm-shell [data-ball-index],
+:where(.page-lets-talk) .lsm-shell [data-register-figure],
+:where(.page-lets-talk) .lsm-shell [data-mq-plain],
+:where(.page-lets-talk) .lsm-shell [data-grid] { display: none !important; }
+:where(.page-what-we-do) .lsm-shell [data-motif],
+:where(.page-what-we-do) .lsm-shell [data-basketball],
+:where(.page-what-we-do) .lsm-shell [data-ball-index],
+:where(.page-what-we-do) .lsm-shell [data-mq-plain],
+:where(.page-what-we-do) .lsm-shell [data-grid] { display: none !important; }
+
+  /* de horizontale scroller wordt weer een gewone verticale lijst */
+  .lsm-shell [data-hscroll] [data-track] { display: block !important; transform: none !important; width: auto !important; }
+  :where(.page-home) .lsm-shell [data-hscroll] [data-panel],
+  :where(.page-what-we-do) .lsm-shell [data-hscroll] [data-panel],
+  :where(.page-lets-talk) .lsm-shell [data-hscroll] [data-panel] { width: auto !important; min-height: 0 !important; }
+  :where(.page-about) .lsm-shell [data-hscroll] [data-panel] { min-height: 0 !important; }
+  .lsm-shell [data-hscroll] [data-viewport] { overflow: visible !important; }
+
+  /* gouden banden blijven lopen, maar wat kleiner */
+  .lsm-shell [data-marquee] span { font-size: 17px !important; padding: 0 26px !important; }
+/* spine: rail naar links, alle tekst rechts ervan, nummer echt vierkant */
+:where(.page-what-we-do) .lsm-shell [data-step] { align-items: start !important; row-gap: 10px !important; }
+  :where(.page-what-we-do) .lsm-shell [data-step] { grid-template-columns: 40px 1fr !important; column-gap: 14px !important; }
+  :where(.page-what-we-do) .lsm-shell [data-step] [data-chip] { width: 40px !important; height: 40px !important;
+    margin-left: -18px !important; }
+  :where(.page-what-we-do) .lsm-shell [data-spine] { left: 4px !important; }
+  :where(.page-what-we-do) .lsm-shell [data-active] { font-size: 46px !important; line-height: 1.05 !important; }
+  :where(.page-what-we-do) .lsm-shell [data-step] [data-word] { grid-column: 2 !important; grid-row: 1 !important;
+    text-align: left !important; padding-right: 0 !important; }
+  :where(.page-what-we-do) .lsm-shell [data-step] [data-chip] { grid-column: 1 !important; grid-row: 1 !important;
+    width: 40px !important; height: 40px !important; aspect-ratio: 1 / 1 !important;
+    justify-self: start !important; }
+  :where(.page-what-we-do) .lsm-shell [data-step] > div { grid-column: 2 !important; grid-row: 2 !important;
+    padding-left: 0 !important; }
+  :where(.page-what-we-do) .lsm-shell [data-spine] { left: 20px !important; transform: translateX(-.5px) !important; }
+/* slotsectie: tekst gecentreerd en de uitsnede naar rechts, waar de
+   basket staat — op mobiel valt die anders volledig buiten beeld */
+:where(.page-what-we-do) .lsm-shell img[src*="closing-bg"] { object-position: 72% center !important; }
+  :where(.page-what-we-do) .lsm-shell section:has(img[src*="closing-bg"]) h2 { text-align: center !important; }
+  :where(.page-what-we-do) .lsm-shell section:has(img[src*="closing-bg"]) h2 span { margin-left: 0 !important; display: block !important; }
+/* ---- register op mobiel: Coryn erachter, de vijf als slider ervoor --
+   De foto blijft dus staan (hij was verborgen) en zakt naar een
+   achtergrondlaag; de vijf punten schuiven er horizontaal overheen,
+   met scroll-snap zodat elke kaart netjes uitlijnt.                  */
+:where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) { position: relative !important;
+    overflow: hidden !important; }
+  :where(.page-what-we-do) .lsm-shell [data-register-figure] { display: block !important;
+    position: absolute !important; left: 50% !important; bottom: 0 !important;
+    transform: translateX(-50%) !important;
+    width: 88vw !important; max-width: none !important; height: auto !important;
+    margin: 0 !important; padding: 0 !important; z-index: 0 !important;
+    bottom: 150px !important;
+    opacity: 1 !important; pointer-events: none !important; }
+  :where(.page-what-we-do) .lsm-shell [data-register-figure] img { width: 100% !important; height: auto !important;
+    max-width: none !important; display: block !important; }
+  :where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) > div { position: static !important; }
+  :where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) h2,
+  :where(.page-what-we-do) .lsm-shell [data-stage] { position: relative !important; z-index: 2 !important; }
+/* de rij met de twee kolommen wordt één horizontale slider */
+:where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) > div > div {
+    position: absolute !important; left: 0 !important; right: 0 !important;
+    bottom: 186px !important; z-index: 2 !important;
+    display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
+    justify-content: flex-start !important; align-items: stretch !important;
+    gap: 12px !important; overflow-x: auto !important; overflow-y: hidden !important;
+    margin: 0 !important; padding: 4px 40px 8px !important;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-anchor: none !important;
+    scrollbar-width: none !important; }
+  :where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) > div > div::-webkit-scrollbar { display: none !important; }
+  /* de twee kolommen zelf verdwijnen als doos, hun kinderen worden de kaarten */
+  :where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) > div > div > div:not([data-stage]) {
+    display: contents !important; }
+:where(.page-what-we-do) .lsm-shell [data-stage] {
+    flex: none !important; width: 66vw !important; max-width: none !important;
+    min-width: 66vw !important; box-sizing: border-box !important;
+    border: 1px solid rgba(11,11,11,.10) !important; border-radius: 15px !important;
+    background: rgba(244,242,236,.955) !important;
+    box-shadow: 0 10px 30px rgba(11,11,11,.10) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    backdrop-filter: blur(10px) saturate(140%);
+    text-align: left !important;
+    padding: 20px 20px 24px !important; margin: 0 !important; }
+        /* de afsluitende zin staat los onder de foto, gecentreerd in het grid */
+        :where(.page-what-we-do) .lsm-shell [data-register-note] { position: absolute !important; z-index: 2 !important;
+    left: 40px !important; right: 40px !important; bottom: 40px !important;
+    margin: 0 !important; padding: 0 !important; border: 0 !important;
+    text-align: center !important; text-wrap: balance !important;
+    font-size: 15.5px !important; line-height: 1.62 !important;
+    color: rgba(11,11,11,.78) !important; }
+  :where(.page-what-we-do) .lsm-shell [data-stage] p { font-size: 30px !important; }
+  :where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) [data-rail],
+  :where(.page-what-we-do) .lsm-shell [data-stage] [data-tick] { display: none !important; }
+  /* de sectie krijgt onderaan lucht zodat Coryn niet tegen de kaarten plakt */
+  :where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) > div:first-of-type { padding-bottom: calc(88vw * 3.175 + 170px) !important; }
+  /* de tweede div is de rasterlaag; die hoeft die hoogte niet mee te nemen */
+  :where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) > div:not(:first-of-type) { padding-bottom: 0 !important; }
+:where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) h2 { text-align: center !important; }
+/* de scheidingslijn onder de hero weg en het formulier omhoog */
+:where(.page-lets-talk) .lsm-shell section.form-band { border-top: 0 !important; }
+  :where(.page-lets-talk) .lsm-shell form { padding-top: 8px !important; }
+  :where(.page-lets-talk) .lsm-shell section:has(form) > div { padding-top: 0 !important; }
+/* radio's dichter op elkaar */
+:where(.page-lets-talk) .lsm-shell fieldset div.form-choice-row { gap: 6px 24px !important; }
+  :where(.page-lets-talk) .lsm-shell fieldset label { min-height: 38px !important; }
+/* De zijfoto heeft op desktop een negatieve marge van -245px om naast de
+   titel te beginnen. Op mobiel trok die hem dwars door het formulier,
+   over de verstuurknop heen. Hier hoort hij gewoon onder het formulier,
+   vierkant, met lucht ertussen. */
+:where(.page-lets-talk) .lsm-shell [data-side-photo] { margin: 56px 0 0 !important; width: 100% !important;
+    max-width: 100% !important; aspect-ratio: 1 / 1 !important; order: 9 !important; }
+  :where(.page-lets-talk) .lsm-shell [data-side-photo] img { inset: 0 !important; width: 100% !important;
+    height: 100% !important; object-fit: cover !important; object-position: center 22% !important; }
+  :where(.page-lets-talk) .lsm-shell section:has([data-side-photo]) > div { align-items: stretch !important; }
+
+
+
+
+  /* ---- footer mobiel: lager, gecentreerd, copyright op één regel ---- */
+  .lsm-shell footer { padding-top: 92px !important; padding-bottom: 52px !important;
+    border-top: 0 !important; }
+  .lsm-shell footer > div { flex-direction: column !important; align-items: center !important;
+    justify-content: center !important; gap: 16px !important; text-align: center !important;
+    padding: 0 20px !important; }
+  .lsm-shell footer > div > div { flex-direction: column !important; align-items: center !important;
+    gap: 14px !important; }
+  .lsm-shell footer svg { width: 46px !important; }
+  .lsm-shell footer p { font-size: 12px !important; letter-spacing: .09em !important;
+    white-space: nowrap !important; text-align: center !important; }
+/* Zelfde inspringing als index (40px), zodat één pilmaat op alle vier
+   de pagina's uitlijnt met de tekst eronder. */
+:where(.page-what-we-do) .lsm-shell section > div:not([data-aurora]),
+:where(.page-about) .lsm-shell section > div:not([data-aurora]),
+:where(.page-lets-talk) .lsm-shell section > div:not([data-aurora]) { padding-left: 40px !important; padding-right: 40px !important; }
+/* profielpanelen komen uit de horizontale scroller en houden daar vaste
+   kolombreedtes aan; op mobiel moet alles de volle breedte pakken */
+/* Panelen wisselen licht/donker af. Op mobiel moet dat vlak van rand tot
+   rand lopen — anders staat er een smalle lichte kolom in een zwart veld.
+   Het paneel breekt daarom uit de 40px-inspringing en neemt die zelf. */
+:where(.page-about) .lsm-shell [data-panel][data-panel] { width: 100vw !important; min-width: 0 !important; max-width: none !important;
+    display: block !important; height: auto !important; flex: none !important;
+    margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important;
+    padding: 56px 40px !important; border-right: 0 !important; }
+  :where(.page-about) .lsm-shell [data-viewport][data-viewport] { height: auto !important; overflow: hidden !important;
+    padding-left: 0 !important; padding-right: 0 !important; }
+  :where(.page-about) .lsm-shell [data-hscroll] > div { padding-left: 0 !important; padding-right: 0 !important; }
+  :where(.page-about) .lsm-shell [data-track][data-track] { height: auto !important; padding-left: 0 !important; padding-right: 0 !important; }
+  :where(.page-about) .lsm-shell [data-panel] > *,
+  :where(.page-about) .lsm-shell [data-panel] div,
+  :where(.page-about) .lsm-shell [data-panel] p,
+  :where(.page-about) .lsm-shell [data-panel] h2,
+  :where(.page-about) .lsm-shell [data-panel] h3 { width: auto !important;
+    max-width: 100% !important; min-width: 0 !important; }
+  :where(.page-about) .lsm-shell [data-panel] figure { width: 100% !important; margin: 0 0 28px !important; }
+/* ---- profielpanelen op mobiel -------------------------------------
+   De figuren dragen een placeholder-achtergrond uit de opzetfase; met
+   een echte foto erin bleef die als grijs vlak zichtbaar rondom het
+   beeld. Beeld vult nu het kader, de drager verdwijnt.               */
+:where(.page-about) .lsm-shell [data-panel] figure { background: none !important; border: 0 !important;
+    aspect-ratio: 1 / 1 !important; overflow: hidden !important; }
+  :where(.page-about) .lsm-shell [data-panel] figure img { position: absolute !important;
+    left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important;
+    object-fit: cover !important; object-position: 50% 20% !important; }
+  /* tellertje en rol waren te klein en te donker om te lezen */
+  :where(.page-about) .lsm-shell [data-panel] p.panel-number-dark { font-size: 12.5px !important;
+    color: rgba(242,240,234,.78) !important; }
+  :where(.page-about) .lsm-shell [data-panel] p.panel-role { font-size: 12.5px !important; }
+  /* naam, rol en tekst dichter op elkaar */
+  :where(.page-about) .lsm-shell [data-panel] h2 { margin-top: 12px !important; }
+  :where(.page-about) .lsm-shell [data-panel] p.panel-role { margin-top: 8px !important; }
+  :where(.page-about) .lsm-shell [data-panel] p:is(.panel-bio-dark, .panel-bio-light) { margin-top: 16px !important; }
+  :where(.page-about) .lsm-shell [data-panel] [data-tail] { margin-top: 22px !important;
+    font-size: 11.5px !important; color: rgba(242,240,234,.7) !important; }
+/* Keuzerondjes: minder lucht tussen de twee rijen, en het rondje links
+   uitgelijnd met de legenda erboven. De browser zet zelf een marge om
+   een radio (Chrome: 3px 3px 0 5px); die duwde de kolom naar rechts. */
+:where(.page-lets-talk) .lsm-shell fieldset > div { gap: 11px 22px !important; }
+  :where(.page-lets-talk) .lsm-shell fieldset input[type="radio"] { margin: 0 !important; flex: none !important; }
+  :where(.page-lets-talk) .lsm-shell fieldset label { line-height: 1.2 !important; align-items: center !important; }
+  :where(.page-lets-talk) .lsm-shell fieldset legend { margin-bottom: 10px !important; padding-left: 0 !important; }
+  :where(.page-lets-talk) .lsm-shell fieldset { padding: 0 !important; border: 0 !important; margin-inline: 0 !important; }
+
+  /* ---- zwevende header-pill met glaseffect ------------------------
+     De pil is donker, dus het witte woordmerk werkt op elke pagina —
+     de zwart-maak-regels voor de lichte hero's zijn daarmee overbodig.
+     Logo en knop even hoog en verticaal gecentreerd in de pil.        */
+  .lsm-shell > header { position: fixed !important; top: 12px !important;
+    left: 14px !important; right: 14px !important; width: auto !important;
+    z-index: 90; background: none !important; }
+  .lsm-shell > header > div {
+    height: 62px !important; width: 100% !important; max-width: 100% !important;
+    padding-left: 25px !important; padding-right: 17px !important;
+    display: flex !important; align-items: center !important; justify-content: space-between !important;
+    border-radius: 999px !important;
+    background: rgba(14,14,14,.66) !important;
+    border: 1px solid rgba(242,240,234,.12) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%); }
+  .lsm-shell > header a[aria-label] { background: none !important; padding: 0 !important;
+    display: flex !important; align-items: center !important; min-height: 44px !important; }
+  .lsm-shell > header svg { width: 100px !important; }
+  .lsm-shell > header svg [fill="#fff"], .lsm-shell > header svg [fill="#FFF"],
+  .lsm-shell > header svg [fill="#ffffff"], .lsm-shell > header svg [fill^="url("] { fill: #F2F0EA !important; }
+  .burger { background: none !important; width: 46px !important; height: 46px !important;
+    border-radius: 999px !important; order: 9 !important; }
+
+  /* de pil zweeft, dus de hero moet er ruim onder beginnen */
+  #menu { inset: 86px 14px 14px !important; border-radius: 26px !important;
+    background: rgba(10,10,10,.94) !important;
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+
+
+  /* onder 345px wordt het krap met logo + CTA + knop naast elkaar */
+  @media (max-width: 344px) {
+    .lsm-shell > header svg { width: 82px !important; }
+    .lsm-shell > header .btn { font-size: 9.5px !important; padding: 10px 12px !important;
+      margin-right: 6px !important; }
+  }
+
+
+  /* pil iets lager en de drie elementen op één middellijn; het woordmerk
+     wordt op mobiel tot alleen LAUNCH gesneden (slice op de viewBox). */
+  .lsm-shell > header > div { height: 54px !important; }
+  .lsm-shell > header .btn { font-size: 10.5px !important; padding: 8px 15px !important;
+    line-height: 1 !important; }
+  .lsm-shell > header svg { width: 118px !important; height: 15px !important; }
+  /* Het woordmerk zet niet alleen paths maar ook polygon en rect in, met
+     een verloop van wit naar zwart. Alleen 'path' aanspreken liet die
+     donker staan — vandaar dat het logo grijs oogde. */
+  .lsm-shell > header svg path, .lsm-shell > header svg polygon,
+  .lsm-shell > header svg rect, .lsm-shell > header svg circle { fill: #fff !important; }
+  .lsm-shell > header a[aria-label] { min-height: 0 !important; padding: 12px 0 !important; }
+  .lsm-shell > header > div > * { display: flex !important; align-items: center !important; }
+
+  /* hamburger — alleen onder 1024px */
+  .lsm-shell > header nav { display: none !important; }
+  /* de CTA past naast de knop; logo iets kleiner om ruimte te maken */
+  .lsm-shell > header .btn { display: inline-flex !important; align-items: center !important;
+    width: auto !important; border-radius: 999px !important; font-size: 10.5px !important;
+    letter-spacing: .14em !important; padding: 11px 16px !important; margin-right: 10px !important;
+    white-space: nowrap !important; min-height: 40px !important; }
+  .lsm-shell > header > div > div { display: flex !important; align-items: center !important; gap: 0 !important; }
+
+  .burger { display: flex !important; flex: none !important; flex-direction: column; justify-content: center; gap: 5px;
+    width: 46px !important; min-width: 46px; height: 46px; padding: 11px 9px; margin-right: -9px;
+    background: none; border: 0; cursor: pointer; box-sizing: border-box; }
+  .burger i { display: block; height: 2px; width: 100%; background: #F2F0EA;
+    transition: transform .28s ease, opacity .2s ease; }
+  .burger[aria-expanded="true"] i:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger[aria-expanded="true"] i:nth-child(2) { opacity: 0; }
+  .burger[aria-expanded="true"] i:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  #menu { position: fixed; inset: 68px 0 0; z-index: 89; background: #000;
+    display: flex; flex-direction: column; justify-content: center; gap: 8px;
+    padding: 0 24px 68px; opacity: 0; visibility: hidden;
+    transition: opacity .3s ease, visibility .3s; }
+  #menu[data-open="true"] { opacity: 1; visibility: visible; }
+  #menu a { display: block; padding: 16px 0; font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 800; font-size: 46px; line-height: 1; letter-spacing: -.01em;
+    text-transform: uppercase; color: #F2F0EA; border-bottom: 1px solid rgba(242,240,234,.14); }
+  #menu a:last-child { border-bottom: 0; }
+  #menu a[aria-current="page"] { color: #CC9D39; }
+  body[data-menu="open"] { overflow: hidden; }
+
+
+  /* raakvlakken naar minimaal 44px (WCAG 2.5.8) */
+  .lsm-shell footer nav a { padding: 12px 0 !important; }
+  .lsm-shell .field { padding-top: 13px !important; padding-bottom: 13px !important; }
+  .lsm-shell input[type="radio"], .lsm-shell input[type="checkbox"] {
+    width: 24px !important; height: 24px !important; accent-color: #CC9D39; }
+  .lsm-shell label:has(> input[type="radio"]), .lsm-shell label:has(> input[type="checkbox"]),
+  .lsm-shell input[type="radio"] + label, .lsm-shell input[type="checkbox"] + label {
+    display: inline-flex !important; align-items: center; min-height: 44px !important; }
+  .lsm-shell header a[aria-label] { display: flex !important; align-items: center; min-height: 44px !important; }
+
+  /* de vaste header dekt de bovenkant af, dus de hero begint eronder */
+  .lsm-shell > header + section { padding-top: 68px !important; }
+
+
+  /* ---- feedbackronde mobiel ------------------------------------- */
+
+  /* 1 — knoppen op de volle breedte van de kolom erboven, tekst gecentreerd */
+  /* de foto is geen sibling van de knop maar van de kolom; direct richten */
+  /* let op: het mobiele menu staat tussen header en hero, dus + section
+     raakt niets meer. Het hero-inzetje direct aanspreken. */
+  .lsm-shell figure:has(img[src*="player-inset"]) { margin-top: 44px !important; }
+  .lsm-shell section .btn { display: block !important; width: 100% !important;
+    text-align: center !important; padding-left: 0 !important; padding-right: 0 !important; }
+
+  /* 2 — aurora leesbaar op een smal scherm: strakkere banden, minder blur */
+  .lsm-shell [data-aurora] i { filter: blur(46px) !important; }
+  .lsm-shell [data-aurora] i:nth-child(1) { opacity: .8 !important;
+    background-image: repeating-linear-gradient(104deg,
+      transparent 0 4%, rgba(204,157,57,.42) 9%, rgba(138,106,38,.32) 15%, transparent 20% 27%) !important; }
+  .lsm-shell [data-aurora] i:nth-child(2) { opacity: .6 !important;
+    background-image: repeating-linear-gradient(68deg,
+      transparent 0 6%, rgba(204,157,57,.30) 12%, transparent 18% 31%) !important; }
+
+  /* 3 — kop en bijschrift naast elkaar botsen; die stapelen */
+  .lsm-shell section div:is(.hero-row, .pillar-header, .roster-header) {
+    flex-direction: column !important; align-items: flex-start !important; gap: 14px !important; }
+
+  /* 4 — het ritme was te ruim: minder lucht tussen label, kop en tekst */
+  .lsm-shell section article { padding-top: 30px !important; padding-bottom: 32px !important;
+    gap: 12px !important; }
+  .lsm-shell section article > p:first-child { margin-bottom: 0 !important; padding-top: 0 !important; }
+  /* GEEN blanket-regel op de sectiepadding: die sloeg overal de witruimte
+     plat terwijl het verzoek alleen over het ritme bínnen een blok ging.
+     Hij raakte bovendien de track van de gouden band, die daardoor
+     64px padding kreeg en veel te hoog werd. */
+
+  /* de titel moet vrij blijven van de vaste header (68px hoog) */
+  .lsm-shell > header ~ section:first-of-type > div:not([data-aurora]) { padding-top: 126px !important; }
+
+  /* 5 — beeld onder de tekst, op dezelfde breedte als de kolom */
+  /* De figuur hangt buiten de tekstkolom, dus schermbreed. Zelfde marge
+     als de tekst geven, en met order onder de kop zetten in plaats van
+     erboven — hij staat in de markup vóór de tekst. */
+  .lsm-shell section:has(> .fig-abs) { display: flex !important; flex-direction: column !important; }
+  .lsm-shell section > .fig-abs { order: 2 !important; }
+  .lsm-shell section > div:not([data-aurora]) { order: 1 !important; }
+  /* Zelfde inspringing als de tekstkolom: die zit op 40px (20 van de sectie
+     plus 20 van de binnenste div), niet op 20. */
+  :where(.page-home) .lsm-shell .fig-abs.fig-abs.fig-abs { position: relative !important;
+    width: auto !important; max-width: none !important;
+    left: auto !important; right: auto !important; top: auto !important;
+    display: block !important; margin: 0 20px 56px !important; }
+  :where(.page-what-we-do) .lsm-shell .fig-abs.fig-abs.fig-abs,
+  :where(.page-about) .lsm-shell .fig-abs.fig-abs.fig-abs,
+  :where(.page-lets-talk) .lsm-shell .fig-abs.fig-abs.fig-abs { position: relative !important;
+    width: auto !important; max-width: none !important;
+    left: auto !important; right: auto !important; top: auto !important;
+    display: block !important; margin: 0 0px 56px !important; }
+  /* de foto vult het kader precies; de parallax-overmaat van 116% hoort
+     bij de desktopvariant en levert hier een willekeurige uitsnede op */
+  .lsm-shell .fig-abs img { inset: 0 !important; width: 100% !important; height: 100% !important;
+    object-fit: cover !important; object-position: center 30% !important; }
+
+
+  /* ---- footer op mobiel: reuzenwoordmerk + meer rook -----------------
+     De rook vult de footer (canvas is inset:0), dus meer hoogte is de
+     enige knop die hem groter maakt. LAUNCH staat er als in de referentie
+     onderlangs doorheen: boven het canvas, onder de inhoud.            */
+  .lsm-shell footer { padding-top: 96px !important; padding-bottom: calc((100vw - 80px) / 2.512 * .74 + 116px) !important; }
+  /* Het woordmerk staat binnen hetzelfde grid als de knoppen en de tekst:
+     40px marge links en rechts. De lettergrootte volgt daaruit — de
+     glyphbreedte van 'LAUNCH' is 2.522x de font-size in Big Shoulders 800,
+     dus (100vw - 80px) / 2.522 vult de kolom precies op elk toestel. */
+  .lsm-shell [data-footmark] { font-size: calc((100vw - 80px) / 2.512) !important;
+    left: 40px !important; right: 40px !important; padding: 0 !important;
+    background-image: repeating-linear-gradient(to bottom,
+      rgba(242,240,234,.16) 0 1px, rgba(242,240,234,0) 1px 4px) !important; line-height: .74 !important;
+    letter-spacing: -.028em !important; color: rgba(242,240,234,.16) !important;
+    bottom: 116px !important; }
+
+  /* footer: meer lucht onder logo en copyright */
+
+  /* slotsectie: meer ruimte boven de kop, en die kop op drie regels */
+  .lsm-shell section:has(> div > .xl:last-child) > div { padding-top: 128px !important; }
+  /* alleen de slotkop centreert en breekt op drie regels; de andere
+     grote koppen zijn links uitgelijnd en moeten dat blijven */
+  :where(.page-home) .lsm-shell .slot-kop.slot-kop,
+  :where(.page-lets-talk) .lsm-shell .slot-kop.slot-kop { max-width: 290px !important;
+    margin-left: auto !important; margin-right: auto !important; }
+  :where(.page-what-we-do) .lsm-shell .slot-kop.slot-kop { max-width: 310px !important; font-size: clamp(38px, 11.5vw, 68px) !important;
+    margin-left: auto !important; margin-right: auto !important; }
+  /* de harde afbreking is voor breed; op mobiel levert die een
+     onnodige derde regel op */
+  :where(.page-about) .lsm-shell .slot-kop br { display: none !important; }
+  :where(.page-about) .lsm-shell [data-staart] { white-space: nowrap !important; }
+  /* Op About hoort de breuk ná 'BUILT FOR' te vallen; zonder de <br> loopt
+     de zin door en komt 'FOR' alleen op een regel. */
+  :where(.page-about) .lsm-shell .slot-kop br { display: inline !important; }
+  /* De regelopdeling wordt bij het laden vastgezet door de tekstanimatie;
+     alleen een kleiner korps vóór dat moment krijgt 'FOR' nog op regel 1. */
+  :where(.page-about) .lsm-shell .slot-kop.slot-kop { font-size: 38px !important;
+    max-width: 310px !important;
+    margin-left: auto !important; margin-right: auto !important; }
+
+  /* 6 — twee speelsters naast elkaar, geen drie */
+  .lsm-shell .roster li { width: calc((100% - 20px) / 2) !important; }
+  .lsm-shell .roster { column-gap: 20px !important; row-gap: 34px !important;
+    margin-left: 20px !important; margin-right: 20px !important; }
+
+  /* 7 — slotkop groter met meer regelafstand, en het gat eronder kleiner */
+  .lsm-shell .xl { font-size: clamp(38px, 11.4vw, 72px) !important; line-height: 1.02 !important; }
+  .lsm-shell footer nav { display: none !important; }
+  .lsm-shell footer > div { padding-top: 0 !important; padding-bottom: 0 !important; }
+
+  /* footer onder elkaar */
+}
+@media (min-width: 1680px) { :where(.page-home) .roster li { width: calc((100% - 90px) / 4); } }
+/* Korte vensters: de herokolom comprimeert, zodat de gouden band
+   ook daar nog boven de vouw past. */
+/* Op 900px hoog paste de hero net niet meer sinds de kop naar beneden
+   schoof; iets minder onderruimte houdt de gouden balk op de vouw. */
+@media (max-height: 940px) {
+  :where(.page-home) [data-sec="hero"] > div { padding-bottom: clamp(40px, 6.2vh, 100px) !important; }
+}
+
+@media (max-height: 860px) {
+  /* Sinds de kop op twee regels staat past de hero op lage schermen niet
+     meer binnen 100vh; kop en kopruimte krimpen mee zodat de gouden balk
+     op de vouw blijft staan. */
+  :where(.page-home) [data-sec="hero"] { --h1: calc(var(--content) / 8.6) !important;
+    --pad-top: calc(88px + clamp(16px, 3.2vh, 42px)) !important; }
+  :where(.page-home) [data-sec="hero"] > div { padding-bottom: clamp(26px, 5vh, 70px) !important; }
+  :where(.page-home) [data-sec="hero"] .hero-sub { font-size: 26px !important; }
+  :where(.page-home) [data-sec="hero"] .hero-body { margin-top: 12px !important; padding-top: 12px !important; }
+  :where(.page-home) [data-sec="hero"] .btn { margin-top: 20px !important; padding: 15px 28px !important; }
+}
+
+/* Vanaf 1800px staat de bal op kophoogte; de intro-alinea schuift naar
+   links zodat hij die niet raakt. */
+@media (min-width: 1800px) {
+  /* !important nodig: kop en rij dragen hun breedte in het style-attribuut */
+  :where(.page-home) [data-opp-kop] { width: 520px !important; }
+  :where(.page-home) [data-opp-row] { gap: 72px !important; }
+}
+/* Daaronder loopt die alinea door tot bijna de rechterrand en past de bal
+   er niet naast; dan zakt hij naar het open vlak eronder. */
+@media (max-width: 1799px) {
+  :where(.page-home) [data-basketball] { top: 370px; }
+}
+
+/* ---- 1200-1439px: zelfde opmaak, 60px buitenmarge, iets compacter ---- */
+
+
+    /* ---- 1200-1439px: zelfde opmaak, 60px buitenmarge, iets compacter ---- */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .lsm-shell { --shell: calc(100vw - 40px) !important; }
+  /* de profielpanelen staan verticaal gecentreerd in een 100vh-venster;
+     onder 1440px levert dat te veel loze ruimte boven en onder op */
+  [data-viewport] { height: calc(100vh - 180px - var(--wp-bar)) !important; }
+  /* de uitsnedes hangen 40px buiten de kolom en raakten zo de schermrand */
+  .fig-abs { right: 40px !important; }
+  /* hero-koppen een maat kleiner; line-height is unitless en schaalt mee */
+  [data-hero-kop] { font-size: 7.32vw !important; width: min(840px, 50vw) !important; }
+  /* kop en tekst van 'Opportunity' naast elkaar houden */
+  [data-opp-row] { gap: 56px !important; }
+  [data-opp-kop] { width: 47vw !important; font-size: 6.6vw !important; }
+  [data-opp-tekst] { width: 33vw !important; }
+  /* de vier pijlers: smallere koppen, meer breedte voor de tekst rechts */
+  [data-pillar] { gap: 48px !important; }
+  [data-pillar] > p:first-child { width: 150px !important; }
+  [data-pillar] > h3 { width: min(566px, 32vw) !important; font-size: 46px !important; }
+  /* hero-beeld op What We Do gelijk aan About: vierkant en op kophoogte */
+  [data-hero-fig] { aspect-ratio: 1 / 1 !important; width: min(500px, 37vw) !important; }
+  /* de bal hangt 52px links buiten zijn paneel; dit zet hem op 40px van de rand */
+  [data-ball-index] { left: 32px !important; }
+}
+
+/* ---- 1024-1199px: 40px buitenmarge en nog een maat kleiner ---- */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .lsm-shell { --shell: 100vw !important; }
+  /* de profielpanelen staan verticaal gecentreerd in een 100vh-venster;
+     onder 1440px levert dat te veel loze ruimte boven en onder op */
+  [data-viewport] { height: calc(100vh - 180px - var(--wp-bar)) !important; }
+
+  .fig-abs { right: 40px !important; }
+  .fig-abs { width: min(500px, 36vw) !important; }
+  /* de profielpanelen zijn 1040px breed en liepen daardoor het scherm uit;
+     hier schermbreed met dezelfde 40px-marge als de rest */
+  [data-panel] { width: 100vw !important; padding-left: 40px !important;
+    padding-right: 40px !important; gap: 48px !important; }
+  [data-panel] figure { width: min(340px, 34vw) !important; }
+  /* bal kleiner en op 40px van de rand; stapwoorden een maat terug */
+  [data-ball-index] { left: 52px !important; }
+  [data-ball-index] img { width: 300px !important; }
+  [data-word] { font-size: 40px !important; }
+  [data-ball-index] { left: 48px !important; }
+  /* smallere tekstkolom in de hero, en de foto op Let's Talk kleiner zodat
+     het formulier meer ruimte houdt */
+  [data-hero-kolom] { width: 400px !important; }
+  [data-side-photo] { width: 324px !important; margin-right: 0 !important; }
+  [data-hero-kop] { width: min(820px, 44vw) !important; }
+
+  [data-hero-kop] { font-size: 7.1vw !important; }
+  [data-opp-row] { gap: 44px !important; }
+  [data-opp-kop] { width: 46vw !important; font-size: 6.3vw !important; }
+  [data-opp-tekst] { width: 33vw !important; }
+  [data-pillar] { gap: 36px !important; }
+  [data-pillar] > p:first-child { width: 130px !important; font-size: 10.5px !important; }
+  [data-pillar] > h3 { width: min(566px, 32vw) !important; font-size: 41px !important; }
+  [data-hero-fig] { aspect-ratio: 1 / 1 !important;
+    width: min(500px, 34vw) !important; }
+  /* de hero-kop op de home hangt aan --content; die volgde de oude,
+     bredere kolom en bleef daardoor op 1024 veel te groot */
+  section.hero-band-home { --content: calc(100vw - 160px) !important; }
+  /* sluitkoppen: bij 100px passen ze in drie regels in plaats van vijf */
+  .slot-kop { font-size: min(100px, 8.5vw) !important; }
+  /* de trapsgewijze inspringing at de laatste regel op; halveer hem hier */
+  .slot-kop > span:nth-child(2) { margin-left: 88px !important; }
+  .slot-kop > span:nth-child(3) { margin-left: 176px !important; }
+}
+
+/* ---- 1440-1679px: dezelfde opmaak als 1920, maar de kolom is smaller.
+   Alleen wat anders niet naast elkaar past wordt hier bijgesteld; boven
+   1680px verandert er niets (min() valt daar terug op de oude waarde). */
+@media (min-width: 1440px) and (max-width: 1679px) {
+  section h1.hero-title-what-we-do { width: min(840px, 50vw) !important; }
+  section h1.hero-title-about { width: min(820px, 50vw) !important; }
+  [data-ball-index] { left: -33px !important; }   /* bal op 40px van de rand */
+}
+
+
+/* ---- 768-1023px: tabletband -----------------------------------------
+   Deze maten kregen de telefoonopmaak mee (die loopt tot 1023px). Hier
+   staat alleen wat op 768 uit verhouding liep; 390 en 1024+ blijven
+   ongemoeid omdat dit blok daarbuiten valt. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* sectietitels blijven op hun oude maat; alleen wat eronder hangt gaat
+     terug, anders leest een titel niet meer als titel */
+  .lsm-shell .xl { font-size: 72px !important; line-height: 1.02 !important; }
+  .lsm-shell [data-pillar] > h3 { font-size: 54px !important; line-height: 1.04 !important; }
+  .lsm-shell [data-word] { font-size: 60px !important; line-height: 1.04 !important; }
+  .lsm-shell [data-active] { font-size: 60px !important; line-height: 1.04 !important; }
+  /* pijler 03 heeft een korte kop; dan schoof de alinea ernaast in plaats
+     van eronder. Kop en tekst krijgen elk een hele regel. */
+  :where(.page-home) .lsm-shell [data-pillar] > h3,
+  :where(.page-home) .lsm-shell [data-pillar] > p:last-of-type { flex: 0 0 100% !important; width: 100% !important; }
+  /* de sluitkop volgt .xl (72px) en brak daardoor op drie regels. De
+     mobiele laag haalt bovendien de <br> weg, waardoor de kop als één
+     doorlopende zin afbreekt; hier mag die breuk juist wél staan. */
+  .lsm-shell .slot-kop.slot-kop { font-size: 54px !important; line-height: 1.04 !important; }
+  .lsm-shell .slot-kop br { display: inline !important; }
+  /* sluitkoppen stonden op 290px breed, dus 219px marge aan weerszijden.
+     Aan het venster meten, niet aan de container: die heeft zelf al
+     padding en dan telt het dubbel. */
+  .lsm-shell .slot-kop.slot-kop { max-width: calc(100vw - 160px) !important; }
+  /* knoppen zijn hier geen balken meer. .lsm-shell section .btn (0,3,0) zet ze
+     op volle breedte, dus die specificiteit moet geëvenaard worden. */
+  .lsm-shell section .btn { display: inline-block !important; width: auto !important;
+    max-width: none !important;
+    padding-left: 34px !important; padding-right: 34px !important; }
+/* de bal past hier weer naast de intro-alinea; die kolom wordt smaller
+   zodat er ruimte overblijft */
+:where(.page-home) .lsm-shell [data-basketball] { display: block !important; top: 300px !important; }
+  :where(.page-home) [data-opp-tekst] { width: 380px !important; }
+  /* de fotoband is minder hoog, zodat de speelsters vollediger in beeld staan */
+  :where(.page-home) .lsm-shell figure:has(img[src*="team-on-bench"]) { height: 420px !important; }
+  /* de tijdlijnanimatie past hier weer; op de telefoon blijft hij uit.
+     De twaalf labels staan op vaste breukdelen van de breedte en lopen
+     onder ~900px in elkaar; de tekening houdt daarom haar eigen breedte
+     en de strook schuift horizontaal mee. */
+  /* dubbel attribuut voor (0,3,0): de algemene max-width:100% weegt even
+     zwaar en zou de 1100px anders terugknijpen naar de containerbreedte */
+  :where(.page-home) .lsm-shell [data-motif][data-motif] { display: block !important; width: 1100px !important;
+    max-width: none !important; }
+  :where(.page-home) .lsm-shell [data-motif-scroll] { overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  /* de slotalinea liep over 728px; dat leest te breed */
+  :where(.page-home) .lsm-shell section p:is(.hero-subhead, .pillar-label, .sec-philosophy-lead, .sec-why-note, .sec-why-statement) { max-width: 600px !important; }
+/* Coryn stond op 88vw en werd daarmee 676px breed. Hier begrensd op
+   hoogte en gecentreerd; de sectie krimpt navenant mee. */
+:where(.page-what-we-do) .lsm-shell [data-register-figure] { width: auto !important; height: 720px !important;
+    bottom: 150px !important; }
+  :where(.page-what-we-do) .lsm-shell [data-register-figure] img { width: auto !important; height: 100% !important; }
+  :where(.page-what-we-do) .lsm-shell section:has([data-register-figure]) > div:first-of-type {
+    padding-bottom: 900px !important; }
+  /* meer lucht tussen de slotzin en de zwarte sectie eronder */
+  :where(.page-what-we-do) .lsm-shell [data-register-note] { bottom: 96px !important; }
+  /* de schuifkaarten stonden op 66vw en werden daarmee ruim 500px breed */
+  :where(.page-what-we-do) .lsm-shell [data-stage] { width: 320px !important; min-width: 320px !important; }
+/* Profielpanelen: op deze breedte past het beeld naast de tekst.
+   50/50 binnen het grid, marges links en rechts blijven staan. */
+:where(.page-about) .lsm-shell [data-panel][data-panel] { display: flex !important; align-items: center !important;
+    gap: 40px !important; }
+  :where(.page-about) .lsm-shell [data-panel] figure { width: 50% !important; flex: none !important;
+    margin: 0 !important; }
+  :where(.page-about) .lsm-shell [data-panel] > div { flex: 1 1 0 !important; min-width: 0 !important; }
+}
+
+
+/* De hero-uitsnede is absoluut geplaatst en telt dus niet mee voor de
+   sectiehoogte: er bleef 19px over onder de foto, en op 1280-1366 stak
+   hij zelfs de zwarte sectie in. Een ondergrens lost dat overal op. */
+@media (min-width: 1024px) {
+  :where(.page-about) section:has(> div > .fig-abs),
+  :where(.page-about) section:has(.fig-abs) { min-height: 680px; }
+}
+@media (max-width: 767px) { [data-label] { font-size: 12.5px !important; } }
+  
+/* ---- staart: sluitsectie en footer schuiven in elkaar ----------------
+   Het woordmerk en de rook hebben hun eigen hoogte nodig, dus de footer
+   kan niet korter zonder ze te verkleinen. In plaats daarvan schuift de
+   footer 450px omhoog en loopt hij achter de sluitkop en de knop door.
+   De sluitsectie geeft daarvoor haar eigen zwart op — dat komt nu van de
+   footer, die door de negatieve marge over dat hele vlak ligt — en wordt
+   op z-index 2 gezet zodat haar tekst bovenop blijft. */
+@media (min-width: 1200px) {
+  footer { margin-top: -450px; }
+  /* De sectie blijft zwart, maar lost over de laatste 450px op zodat de
+     rook en het woordmerk van de footer eronder zichtbaar worden. Zij
+     staat op z-index 2, dus haar kop en knop blijven bovenop. */
+  [data-staartsectie] {
+    position: relative; z-index: 2;
+    background: linear-gradient(to bottom,
+      #000 0, #000 calc(100% - 450px), rgba(0,0,0,0) 100%) !important;
+  }
+}
+/* Vanaf 1024px staat de rij op flex-end: zou de ondertekening meetellen,
+   dan schuift het copyright een regel omhoog. Daarom hangt hij daar onder
+   de regel in plaats van erin. */
+@media (min-width: 1024px) {
+  [data-credit-wrap] { position: relative; }
+  [data-credit] { position: absolute; top: 100%; left: 0; white-space: nowrap; }
+  [data-motion-wrap] { position: relative; }
+  [data-motion-toggle] { position: absolute; top: 100%; right: 0; margin-top: 9px; white-space: nowrap; }
+}
+@media (max-width: 1023px) {
+  /* raakvlak van minimaal 44px op aanraakschermen */
+  [data-motion-toggle] { margin-top: 8px; font-size: 12.5px; padding: 13px 0; }
+}
+
+/* ===========================================================================
+   PRIVACY POLICY AND 404
+   Below 1024px this sheet already scales every h1/h2/h3 inside .lsm-shell with
+   a clamp and !important, and drops the outer margin to 20px. That does the
+   right thing for the two display titles here for free.
+
+   It does the wrong thing for the policy's subheadings: they are prose, not
+   display type, and .lsm-shell h2 would blow them up to clamp(30px, 8.5vw,
+   60px). The overrides below are specificity (0,2,1) against that rule's
+   (0,1,1), so they win without needing to shout louder.
+   =========================================================================== */
+@media (max-width: 1023px) {
+  /* The site left-aligns everything on small screens; the 404 follows it
+     rather than staying centred and reading like a different site. */
+  .lsm-shell .err-shell { text-align: left !important;
+    padding-top: 84px !important; padding-bottom: 96px !important; }
+  .lsm-shell .err-lede { margin-left: 0 !important; }
+  .lsm-shell .err-links { margin-top: 52px !important; padding-top: 28px !important;
+    justify-content: flex-start !important; gap: 0 26px !important; }
+  /* Keeps the 45px tap target while pulling the first link back level with the
+     left margin, which its own padding would otherwise indent. */
+  .lsm-shell .err-link:first-child { padding-left: 0 !important; }
+
+  /* The contents list stops being a column and becomes a plain list above the
+     policy: sticky in a narrow window would eat the screen. */
+  .lsm-shell .legal-head { padding-top: 48px !important; padding-bottom: 40px !important; text-align: left !important; }
+  .lsm-shell .legal-intro { margin-left: 0 !important; }
+  .lsm-shell .legal-shell { display: block !important; padding-top: 40px !important; padding-bottom: 88px !important; }
+  .lsm-shell .legal-toc { position: static !important; max-width: 100% !important; margin-bottom: 48px !important; }
+  .lsm-shell .legal-prose > .legal-chapter:first-child { margin-top: 0 !important; }
+  .lsm-shell .legal-prose h2 { font-size: 26px !important; margin-top: 44px !important; }
+  .lsm-shell .legal-prose h3 { font-size: 12.5px !important; margin-top: 30px !important; }
+}
+
+/* The footer is pulled up 450px from 1200px so it tucks behind the closing
+   band, which fades its own black out to let the wordmark and smoke through.
+   That pairing is what makes it work, and it is unconditional: these two pages
+   have no closing band, so the footer would simply cover the last 450px of
+   them - on the 404 that is the message, the button and the shortcuts.
+
+   :where() so this weighs exactly what `footer { margin-top: -450px }` weighs
+   (0,0,1) and wins on source order alone, the way the rest of this sheet
+   scopes per page. The four designed pages all have a closing band and are
+   untouched. */
+@media (min-width: 1200px) {
+  :where(.page-error, .page-legal) footer { margin-top: 0; }
+}

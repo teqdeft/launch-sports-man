@@ -1,0 +1,30 @@
+# ---- credentials and machine-specific configuration -----------------------
+# Database name, user, password and the authentication salts. Never commit it;
+# copy wp-config-sample.php and fill it in per environment.
+wp-config.php
+
+# ---- media ----------------------------------------------------------------
+# Uploads are content, not code. They come from a backup or a migration, and
+# committing them would put 17MB of binaries under version control that the
+# repository can never meaningfully diff.
+wp-content/uploads/
+
+# ---- licensed third-party code --------------------------------------------
+# Advanced Custom Fields Pro is commercial software distributed under its own
+# licence, and the licence key is per-site. Install it from the vendor zip.
+wp-content/plugins/advanced-custom-fields-pro/
+
+# ---- local runtime output -------------------------------------------------
+*.log
+wp-content/debug.log
+wp-content/upgrade/
+wp-content/upgrade-temp-backup/
+wp-content/cache/
+wp-content/backup-db/
+wp-content/mu-plugins/
+
+# ---- editor and OS noise ---------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

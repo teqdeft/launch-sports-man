@@ -1,0 +1,25 @@
+/*
+Theme Name: Launch Sports Management
+Theme URI: https://dev.studioubique.com/launch-sports-man
+Author: Studio Ubique
+Author URI: https://www.studioubique.com/
+Description: Custom theme for Launch Sports Management, built from the approved static build. Content is driven by ACF Pro; the motion layer is GSAP + Lenis.
+Version: 1.0.0
+Requires at least: 6.5
+Tested up to: 7.1
+Requires PHP: 8.0
+License: Proprietary
+Text Domain: launch-sports
+*/
+
+/*  This file exists because WordPress requires a style.css to recognise a
+    theme and to read the header above. It deliberately contains no rules.
+
+    All CSS lives in exactly two files, and neither of them is this one:
+
+        assets/css/desktop.css      base, typography and desktop layout
+        assets/css/responsive.css   every viewport media query
+
+    They are registered in inc/enqueue.php and load in that order. Do not add
+    rules here — a third stylesheet would break the cascade the responsive
+    sheet depends on, and it would not be picked up by the enqueue chain.  */
