@@ -1,0 +1,73 @@
+name: Deploy Launch Sports Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'List what would change without uploading anything'
+        type: boolean
+        default: false
+
+# One deploy at a time. Two overlapping runs would fight over the same FTP
+# connection and corrupt the sync-state file the action keeps on the server.
+concurrency:
+  group: deploy-launch-sports
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to launch-sports-man-dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        timeout-minutes: 60
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps                # change to "ftp" if FTPS stalls on your host
+          port: 21
+          local-dir: ./                 # the repository root is the WordPress root
+          server-dir: /public_html/launch-sports-man-dev/
+          dangerous-clean-slate: false
+          dry-run: ${{ inputs.dry_run == true }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/node_modules/**
+            **/.claude/**
+            **/.vscode/**
+            **/CLAUDE.md
+            **/*.log
+
+            # --- must never be overwritten on the server ---------------------
+            # Local rewrite rules. This file says RewriteBase /launch-wp/, which
+            # is this machine's path. Shipping it would break every URL on the
+            # live site except the home page.
+            .htaccess
+
+            # Credentials and salts. Not in the repository, listed here so a
+            # future change to .gitignore cannot quietly start deploying it.
+            **/wp-config.php
+            **/.env
+
+            # Content and licensed code that live on the server, not in git.
+            # dangerous-clean-slate is false, so anything already uploaded
+            # stays put and is never deleted by a deploy.
+            wp-content/uploads/**
+            wp-content/plugins/advanced-custom-fields-pro/**
+
+            # Local runtime output.
+            wp-content/upgrade/**
+            wp-content/upgrade-temp-backup/**
+            wp-content/cache/**
+            wp-content/debug.log
