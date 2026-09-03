@@ -748,3 +748,13 @@
 @media (min-width: 1200px) {
   :where(.page-error, .page-legal) footer { margin-top: 0; }
 }
+
+/* The choice row's message.
+   desktop.css pulls it up by 7px to cancel the 28px gap that row lays its
+   options out with. Below 1024px that gap is 6px and the options wrap onto two
+   44px tap-target rows, so the same pull drags the message into the second row.
+   This value is measured, not derived: it lands the message the same 9px clear
+   of the options that every other field's message sits at. */
+@media (max-width: 1023px) {
+  .lsm-shell .form-choice-row .wpcf7-not-valid-tip { margin-top: 15px !important; }
+}

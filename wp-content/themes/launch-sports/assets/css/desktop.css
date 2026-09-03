@@ -2344,10 +2344,15 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* In the choice row the tip would otherwise queue up as a fifth flex item
-   beside the options; this drops it onto its own line under them. */
+   beside the options; flex-basis drops it onto its own line under them.
+
+   That line is separated by the row's own 28px gap, which put the message 20px
+   clear of the options where every other field sits 9px clear. The negative
+   margin gives back the difference so the whole form keeps one rhythm. Below
+   1024px the row gap is 6px instead, so responsive.css sets its own value. */
 .form-choice-row .wpcf7-not-valid-tip {
   flex-basis:100%;
-  margin-top:4px;
+  margin-top:-7px;
 }
 
 /* The offending control, marked without relying on colour alone - the message
