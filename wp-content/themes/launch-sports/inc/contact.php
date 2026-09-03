@@ -227,3 +227,31 @@ function lsm_cf7_acceptance_as_validation( $props, $contact_form ) {
 	return $props;
 }
 add_filter( 'wpcf7_contact_form_properties', 'lsm_cf7_acceptance_as_validation', 10, 2 );
+
+/**
+ * Report the consent box as a plain Yes or No in the enquiry email.
+ *
+ * CF7 renders an acceptance mail tag as "Consented: <the wording on the form>",
+ * which reads oddly on a line that already says "Consent:" and buries the
+ * answer at the front of a sentence. Whoever reads these wants to see, at a
+ * glance and in the same shape as every other field, whether the box was
+ * ticked.
+ *
+ * Scoped to this one field by name: any other acceptance box added later keeps
+ * CF7's own wording, which records what was agreed to and is the better default
+ * when the wording matters more than the answer.
+ *
+ * @param string             $replaced  CF7's rendering.
+ * @param string|array       $submitted The submitted value.
+ * @param bool               $html      Whether the mail is HTML.
+ * @param WPCF7_MailTag|null $mail_tag  The tag being replaced.
+ * @return string
+ */
+function lsm_cf7_consent_yes_no( $replaced, $submitted, $html, $mail_tag ) {
+	if ( ! $mail_tag || 'consent' !== $mail_tag->field_name() ) {
+		return $replaced;
+	}
+
+	return empty( $submitted ) ? 'No' : 'Yes';
+}
+add_filter( 'wpcf7_mail_tag_replaced_acceptance', 'lsm_cf7_consent_yes_no', 20, 4 );
