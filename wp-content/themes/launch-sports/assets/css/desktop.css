@@ -2309,8 +2309,11 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ---- Contact Form 7 validation messages ---------------------------------
-   CF7 anchors each message inside span.wpcf7-form-control-wrap, so that span
-   has to stay in the document. display:contents takes it out of the layout
+   Three CF7 spans have to stay in the document: .wpcf7-form-control-wrap is
+   where a message is appended, and .wpcf7-radio / .wpcf7-acceptance ARE the
+   form control for the choice row and the consent box - without them CF7 never
+   re-validates those two on change, so their error sat there after the reader
+   had fixed it. display:contents takes all three out of the layout
    entirely: the input goes on being a direct child of .form-field as far as
    the box model is concerned, and the four radio labels go on being flex
    items of .form-choice-row. Nothing about the un-submitted form moves.
@@ -2318,7 +2321,9 @@ html.lenis, html.lenis body { height: auto; }
    The span carries no role and no label, and the tip inside it is aria-hidden
    with the real announcement coming from CF7's .screen-reader-response, so
    display:contents costs nothing in the accessibility tree here. */
-.form-shell .wpcf7-form-control-wrap {
+.form-shell .wpcf7-form-control-wrap,
+.form-shell .wpcf7-radio,
+.form-shell .wpcf7-acceptance {
   display:contents;
 }
 

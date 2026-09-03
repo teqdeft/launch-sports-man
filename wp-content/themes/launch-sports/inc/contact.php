@@ -82,22 +82,31 @@ function lsm_cf7_markup( $html ) {
 	};
 
 	/*
-	 * 1. CF7's grouping spans carry no meaning the design uses - with one
-	 * exception. .wpcf7-form-control-wrap is the anchor CF7's own script uses to
-	 * place a validation message:
+	 * 1. Unwrap only the spans CF7's own script never looks for.
+	 *
+	 * Three of them are load-bearing and must stay in the document:
+	 *
+	 *   .wpcf7-form-control-wrap  the anchor a validation message is appended to:
 	 *
 	 *   form.querySelectorAll('.wpcf7-form-control-wrap[data-name="NAME"]')
 	 *     .forEach(el => el.appendChild(tip))
 	 *
 	 * Unwrapping it left that query with nothing to match, so "This field is
-	 * required" was never painted next to the field it belonged to. It stays in
-	 * the document and is taken out of the layout with display:contents instead -
-	 * see .form-shell .wpcf7-form-control-wrap in desktop.css.
+	 * required" was never painted next to the field it belonged to.
+	 *
+	 *   .wpcf7-radio and .wpcf7-acceptance  these spans ARE the form control for
+	 *   a radio group and a consent box - the inputs inside them are not. CF7
+	 *   re-validates a field on change only if the changed element can find a
+	 *   .wpcf7-form-control ancestor, so with these unwrapped, choosing a role or
+	 *   ticking consent left the error message sitting there until the next
+	 *   submit. They also carry aria-describedby to the screen-reader message.
+	 *
+	 * All three stay in the document and are taken out of the layout with
+	 * display:contents instead - see desktop.css. Only .wpcf7-list-item, which
+	 * nothing in CF7 queries, is still unwrapped.
 	 */
 	$groups = $xp->query(
-		".//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-radio ')]"
-		. "|.//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-acceptance ')]"
-		. "|.//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-list-item ')]",
+		".//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-list-item ')]",
 		$root
 	);
 	// Iterate over a snapshot: unwrapping mutates the tree a live list follows.
