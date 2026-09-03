@@ -255,3 +255,29 @@ function lsm_cf7_consent_yes_no( $replaced, $submitted, $html, $mail_tag ) {
 	return empty( $submitted ) ? 'No' : 'Yes';
 }
 add_filter( 'wpcf7_mail_tag_replaced_acceptance', 'lsm_cf7_consent_yes_no', 20, 4 );
+
+/**
+ * Keep the consent box optional in every environment.
+ *
+ * "optional" is part of the form tag, and the form tag lives in the form's own
+ * record in the database - which no deploy carries. Setting it here means a
+ * server that has never had the edit made by hand still behaves the way this
+ * theme expects, rather than silently demanding consent.
+ *
+ * The rewrite is idempotent: a form whose tag already says optional is left
+ * alone, so making the same edit in wp-admin is safe and turns this into a
+ * no-op. It matches the bare tag only, so changing the field in the admin to
+ * anything else takes precedence over this.
+ *
+ * @param array             $props        Form properties.
+ * @param WPCF7_ContactForm $contact_form The form.
+ * @return array
+ */
+function lsm_cf7_consent_optional( $props, $contact_form ) {
+	if ( isset( $props['form'] ) && false !== strpos( $props['form'], '[acceptance consent]' ) ) {
+		$props['form'] = str_replace( '[acceptance consent]', '[acceptance consent optional]', $props['form'] );
+	}
+
+	return $props;
+}
+add_filter( 'wpcf7_contact_form_properties', 'lsm_cf7_consent_optional', 10, 2 );
