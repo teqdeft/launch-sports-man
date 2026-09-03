@@ -81,10 +81,21 @@ function lsm_cf7_markup( $html ) {
 		$node->parentNode->removeChild( $node );
 	};
 
-	// 1. CF7's grouping spans carry no meaning the design uses.
+	/*
+	 * 1. CF7's grouping spans carry no meaning the design uses - with one
+	 * exception. .wpcf7-form-control-wrap is the anchor CF7's own script uses to
+	 * place a validation message:
+	 *
+	 *   form.querySelectorAll('.wpcf7-form-control-wrap[data-name="NAME"]')
+	 *     .forEach(el => el.appendChild(tip))
+	 *
+	 * Unwrapping it left that query with nothing to match, so "This field is
+	 * required" was never painted next to the field it belonged to. It stays in
+	 * the document and is taken out of the layout with display:contents instead -
+	 * see .form-shell .wpcf7-form-control-wrap in desktop.css.
+	 */
 	$groups = $xp->query(
-		".//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-form-control-wrap ')]"
-		. "|.//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-radio ')]"
+		".//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-radio ')]"
 		. "|.//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-acceptance ')]"
 		. "|.//span[contains(concat(' ', normalize-space(@class), ' '), ' wpcf7-list-item ')]",
 		$root
@@ -181,3 +192,29 @@ function lsm_contact_form_shortcode( $page_id = null ) {
 
 	return sprintf( '[contact-form-7 id="%d"]', $id );
 }
+
+/**
+ * Make an unticked consent box report itself like every other required field.
+ *
+ * CF7 handles acceptance separately from validation: an unticked box comes back
+ * as "unaccepted" with only a form-level banner, so the one required field a
+ * reader is most likely to skip is the only one that never says so beside
+ * itself. CF7 has a setting that changes this - acceptance_as_validation - but
+ * it lives in the form's own record in the database, and no deploy carries the
+ * database. Setting it here means it travels with the theme and is true in
+ * every environment, local and live alike.
+ *
+ * @param array            $props        Form properties.
+ * @param WPCF7_ContactForm $contact_form The form.
+ * @return array
+ */
+function lsm_cf7_acceptance_as_validation( $props, $contact_form ) {
+	$settings = isset( $props['additional_settings'] ) ? (string) $props['additional_settings'] : '';
+
+	if ( false === strpos( $settings, 'acceptance_as_validation' ) ) {
+		$props['additional_settings'] = trim( $settings . "\nacceptance_as_validation: on" );
+	}
+
+	return $props;
+}
+add_filter( 'wpcf7_contact_form_properties', 'lsm_cf7_acceptance_as_validation', 10, 2 );
