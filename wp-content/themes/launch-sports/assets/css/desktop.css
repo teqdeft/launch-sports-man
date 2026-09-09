@@ -2360,3 +2360,19 @@ html.lenis, html.lenis body { height: auto; }
 .form-shell .wpcf7-not-valid {
   border-bottom-color:#A32015;
 }
+
+/* ---- focus ring inside the enquiry form ---------------------------------
+   The site-wide ring is a 2px gold outline with a 5px dark halo at 70%. The
+   halo is not decoration: gold is 2.18:1 on this cream and so misses the 3:1
+   that SC 1.4.11 asks of a focus indicator, and the halo supplies it.
+
+   On these fields, though, the control is a bare underline with no border of
+   its own, so a 5px halo reads as a heavy box appearing from nowhere. Slimmed
+   to 2px at 55%, which still composites to 4.22:1 against the cream - clear of
+   3:1 - so the indicator stays compliant while looking like part of the form.
+
+   Scoped to .form-shell: the rest of the site keeps the original ring. */
+.form-shell :focus-visible {
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(11,11,11,.55);
+}
