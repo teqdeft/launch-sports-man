@@ -2394,3 +2394,38 @@ html.lenis, html.lenis body { height: auto; }
 .btn:focus-visible {
   color: #0B0B0B;
 }
+
+/* ---- no ring on the text fields -----------------------------------------
+   Requested: the ring around a focused input reads as a heavy box on a control
+   that is otherwise just an underline.
+
+   Removed from .field only. Those fields already have a focus state of their
+   own - the underline turns gold - so something still marks them. The radios,
+   the consent box and the submit button have no such fallback, so they keep
+   the slimmer ring; taking it off them would leave a keyboard user with no way
+   at all to see where they are.
+
+   Worth recording that the underline alone is a weak indicator: gold is 2.18:1
+   on this cream, under the 3:1 SC 1.4.11 asks of a focus indicator, and the
+   line motion.js draws is 1px. Focus is still visible, so 2.4.7 holds, but the
+   contrast of that indicator does not. Darkening the focused underline would
+   fix it without bringing the ring back. */
+.form-shell .field:focus,
+.form-shell .field:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ---- name/email pairs go full width on narrow screens -------------------
+   Requested: the paired fields (First/Last, Email/Phone) were still sharing a
+   row on a phone, 134px each at 375px, which is too narrow to type into.
+
+   The design already solves this one row down: .form-field-min carries
+   min-width:220px, which is why the graduation-year and school pair stacks by
+   itself. .form-field had flex:1 and no minimum, so it never wrapped however
+   narrow the screen got. Giving it the same minimum uses the mechanism that is
+   already here rather than adding a breakpoint - the pair stacks below roughly
+   508px and each field then fills the row, and above that nothing changes. */
+.form-field {
+  min-width: 220px;
+}
