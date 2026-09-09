@@ -758,3 +758,48 @@
 @media (max-width: 1023px) {
   .lsm-shell .form-choice-row .wpcf7-not-valid-tip { margin-top: 15px !important; }
 }
+
+/* ===========================================================================
+   "OPPORTUNITY CHANGES EVERYTHING" — client feedback, 2026-09-09
+   Two complaints, both about the ball dropping down the page as the window
+   narrows:
+
+   At 1920 the heading is held to 520px, so the copy sits in the middle and the
+   ball has room at the top right. From 1799 down that rule stops applying, the
+   heading widens to 640px, the copy is pushed right, and the ball has nowhere
+   to go but down — `top: 370px`. That is the "moving the wrong way" at 1680.
+
+   Below 1440 the heading was boxed to 47vw and wrapped onto three lines, which
+   pushed everything further down again. Measured: given the full column the
+   heading fits on ONE line at up to 111px (1440), 108px (1280) and 89px (1024),
+   so it never needed to wrap — it only wrapped because of the box around it.
+
+   The side-by-side band starts at 1680, not 1440, because it physically does
+   not fit below that: measured, the photo runs into the copy by 117px at 1441,
+   103px at 1500 and 40px at 1600, and only clears at 1680 (+20px). That is the
+   same wall the original design hit when it dropped the ball to top:370 below
+   1800. So 1441-1679 takes the stacked treatment too.
+
+   These rules deliberately depart from the approved static build at these
+   widths. 1800 and up, and below 1024, are untouched.
+   =========================================================================== */
+
+/* 1680-1799: keep the 1920 arrangement — narrow heading, copy in the middle,
+   ball at the top right, 10% smaller as asked (22vw/380 -> 19.8vw/342). */
+@media (min-width: 1680px) and (max-width: 1799px) {
+  :where(.page-home) [data-opp-kop] { width: 520px !important; }
+  :where(.page-home) [data-opp-row] { gap: 72px !important; }
+  :where(.page-home) [data-basketball] { top: 50px; --bal: clamp(200px, 19.8vw, 342px); }
+}
+
+/* 1024-1679: heading on one line across the full column, copy beneath it, and
+   the ball lifted to sit beside the copy rather than below it.
+   min(96px, 8.2vw) keeps the heading on one line at every width in this band:
+   8.2vw is 84px at 1024 (fits in 89) and is capped at the design's 96px above
+   1170, which fits the 108-111px the column allows. */
+@media (min-width: 1024px) and (max-width: 1679px) {
+  :where(.page-home) [data-opp-row] { gap: 26px !important; }
+  :where(.page-home) [data-opp-kop] { width: 100% !important; font-size: min(96px, 8vw) !important; }
+  :where(.page-home) [data-opp-tekst] { width: min(560px, 46vw) !important; padding-top: 0 !important; }
+  :where(.page-home) [data-basketball] { top: 250px; --bal: clamp(200px, 19.8vw, 342px); }
+}
