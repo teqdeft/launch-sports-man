@@ -2376,3 +2376,21 @@ html.lenis, html.lenis body { height: auto; }
   outline-offset: 2px;
   box-shadow: 0 0 0 2px rgba(11,11,11,.55);
 }
+
+/* ---- gold buttons keep their label on hover ------------------------------
+   `a:hover { color: #CC9D39 }` near the top of this sheet is meant for links
+   in running text. It also matches every gold CTA, and at (0,1,1) it outweighs
+   the (0,1,0) rules that set those buttons' dark label - so hovering a filled
+   gold button turned its text gold on gold and the label all but vanished.
+
+   The hover itself is not CSS: motion.js lifts the button 3px and lightens the
+   fill to #DCAE4B. That interaction is right and is left alone; this only stops
+   the label disappearing during it.
+
+   .btn:hover is (0,2,0) and so beats a:hover without !important. Applied to
+   .btn, which on this site is only ever the filled gold button - the header
+   CTA, the hero CTA, both closing CTAs, the form submit and the 404 button. */
+.btn:hover,
+.btn:focus-visible {
+  color: #0B0B0B;
+}
