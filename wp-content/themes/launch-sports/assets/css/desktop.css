@@ -2414,6 +2414,19 @@ html.lenis, html.lenis body { height: auto; }
 .form-shell .field:focus-visible {
   outline: none;
   box-shadow: none;
+
+  /* The underline jumped up 1px on click. The rule above these swaps the
+     bottom border from 1px to 2px and takes a pixel off the padding to keep
+     the box the same height - which it does, measured: the field, its height
+     and everything below it stay exactly put.
+
+     But that swap was written when the border WAS the visible line. motion.js
+     now paints the line as a background at the bottom of the padding box, and
+     shrinking the padding by a pixel drags it up by one. Holding both values
+     still keeps the line where it is; focus is still marked, by the colour
+     change to gold that motion.js applies. */
+  border-bottom-width: 1px;
+  padding-bottom: 10px;
 }
 
 /* ---- name/email pairs go full width on narrow screens -------------------
