@@ -815,3 +815,42 @@
   :where(.page-home) [data-opp-tekst] { width: min(560px, 46vw) !important; padding-top: 0 !important; }
   :where(.page-home) [data-basketball] { top: 250px; --bal: clamp(200px, 19.8vw, 342px); }
 }
+
+/* ===========================================================================
+   CONSENT CHECKBOX ON SMALL SCREENS — client feedback, 2026-09-09
+   Three separate faults, measured at 768 and 375:
+
+   1. It sat top-aligned, not centred on its line. The mobile block already
+      says align-items:center for labels holding a checkbox, but that selector
+      weighs (0,2,2) and the base rule's deliberate triple class weighs (0,3,0),
+      so flex-start kept winning. Beaten here with (0,4,0), still no !important.
+   2. At 24px it was nearly twice the 13.5px text. Taken to 18px, which sits
+      with the type without becoming a dot.
+   3. At 375 it was rendering 14x24 - flex-shrink squeezing a fixed-width box
+      out of square against the long label. flex: 0 0 18px stops that.
+
+   The 24px was there for WCAG 2.5.8. That is unaffected: the target is the
+   label, which wraps the text and keeps its 44px min-height, so the tap area
+   does not change - only the drawn box does.
+
+   Centring runs to 1024 as asked. The size only applies below 1024, because at
+   1024 itself the box is already the browser's 13px default and "a bit smaller"
+   should not make it bigger.
+   =========================================================================== */
+@media (max-width: 1024px) {
+  .lsm-shell .form-consent.form-consent.form-consent { align-items: center; }
+  /* the 3px nudge existed to drop a top-aligned box onto the first line */
+  .lsm-shell .form-consent-box { margin-top: 0; }
+}
+
+@media (max-width: 1023px) {
+  /* Three classes (0,3,0) to clear `.lsm-shell input[type="checkbox"]` at
+     (0,2,1) - both carry !important, and that rule wins on the element in the
+     selector, which is why an earlier two-class attempt changed the width but
+     left the height at 24 and the box out of square. */
+  .lsm-shell .form-consent .form-consent-box {
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 18px;
+  }
+}
