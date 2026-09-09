@@ -785,11 +785,23 @@
    =========================================================================== */
 
 /* 1680-1799: keep the 1920 arrangement — narrow heading, copy in the middle,
-   ball at the top right, 10% smaller as asked (22vw/380 -> 19.8vw/342). */
+   ball at the top right.
+
+   10%% smaller was asked for and tried first. Measured, it left only 20px
+   between ball and copy and the ball still crowded the paragraph. The ball is
+   anchored to the right edge while the copy is centred in a max-width shell,
+   so every pixel of viewport lost brings the ball a pixel closer - 1920 to
+   1680 costs 240px of clearance, which 10%% of the ball could never cover.
+
+   17vw with a slightly narrower copy column gives 116px at 1680, widening to
+   roughly 250px by 1799. The heading width and the 72px gap are left exactly
+   as they are at 1920 so the arrangement still reads the same; only the ball
+   and the measure of the paragraph give ground, and it still sets in 4 lines. */
 @media (min-width: 1680px) and (max-width: 1799px) {
   :where(.page-home) [data-opp-kop] { width: 520px !important; }
   :where(.page-home) [data-opp-row] { gap: 72px !important; }
-  :where(.page-home) [data-basketball] { top: 50px; --bal: clamp(200px, 19.8vw, 342px); }
+  :where(.page-home) [data-opp-tekst] { width: 420px !important; }
+  :where(.page-home) [data-basketball] { top: 50px; --bal: clamp(200px, 17vw, 342px); }
 }
 
 /* 1024-1679: heading on one line across the full column, copy beneath it, and
